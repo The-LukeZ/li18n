@@ -23,6 +23,8 @@ export type { CompiledLocales, MessageNode, MessageTree } from "./types.ts";
 export interface CompileOptions {
   /** Absolute path to li18n.config.json */
   configPath: string;
+  /** Override the outputDir from the config file */
+  outputDir?: string;
 }
 
 export interface CompileResult {
@@ -34,6 +36,7 @@ export interface CompileResult {
 
 export async function compile(options: CompileOptions): Promise<CompileResult> {
   const config = await loadConfig(options.configPath);
+  if (options.outputDir) config.outputDir = options.outputDir;
   const projectRoot = path.dirname(options.configPath);
   const messagesDir = path.resolve(projectRoot, config.messagesDir);
 

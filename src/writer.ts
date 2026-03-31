@@ -50,7 +50,7 @@ export async function writeOutput(locales: CompiledLocales, config: Li18nConfig)
   const runtimePath = path.join(outputDir, "runtime.ts");
   const runtimeFile = Bun.file(runtimePath);
   if (!(await runtimeFile.exists())) {
-    await writeFile(runtimePath, buildRuntimeFile(defaultLocale));
+    await writeFile(runtimePath, buildRuntimeFile(defaultLocale, config.locales));
   }
 
   // Write .gitignore to exclude all generated files from version control
@@ -80,30 +80,45 @@ function buildRootIndexFile(): string {
   return [
     "// AUTO-GENERATED - do not edit",
     `export * as m from "./messages/_index.ts";`,
-    `export { getLocale, withLocale, setGetLocale, localeStorage } from "./runtime.ts";`,
+    `export { getLocale, setLocale, withLocale, localeStorage, locales, baseLocale } from "./runtime.ts";`,
+    `export type { Locale, MaybePromise } from "./runtime.ts";`,
     "",
   ].join("\n");
 }
 
-function buildRuntimeFile(defaultLocale: string): string {
+function buildRuntimeFile(defaultLocale: string, allLocales: string[]): string {
+  const localeUnion = allLocales.map((l) => JSON.stringify(l)).join(" | ");
+  const localesArray = JSON.stringify(allLocales);
   return `// AUTO-GENERATED - do not edit
 import { AsyncLocalStorage } from "node:async_hooks";
 
-export const localeStorage = new AsyncLocalStorage<string>();
+export type Locale = ${localeUnion};
+export type MaybePromise<T> = T | Promise<T>;
 
-let _override: (() => string) | null = null;
+export const locales: Locale[] = ${localesArray};
+export const baseLocale: Locale = ${JSON.stringify(defaultLocale)};
 
-export function getLocale(fallback?: string): string {
-  if (_override) return _override();
-  return localeStorage.getStore() ?? fallback ?? ${JSON.stringify(defaultLocale)};
+export const localeStorage = new AsyncLocalStorage<Locale>();
+
+let _locale: Locale = baseLocale;
+
+export function setLocale(locale: Locale): void {
+  _locale = locale;
 }
 
-export function withLocale<T>(locale: string, fn: () => T): T {
-  return localeStorage.run(locale, fn);
+export function getLocale(): Locale {
+  return localeStorage.getStore() ?? _locale;
 }
 
-export function setGetLocale(fn: () => string): void {
-  _override = fn;
+export function withLocale<T extends unknown[], R>(
+  handler: (...args: T) => MaybePromise<R>,
+  getLocaleFromHandler: (...args: T) => MaybePromise<Locale | undefined>,
+): (...args: T) => Promise<R> {
+  return async (...args: T) => {
+    const locale = await getLocaleFromHandler(...args);
+    const validLocale = locale && locales.includes(locale) ? locale : baseLocale;
+    return localeStorage.run(validLocale, () => handler(...args));
+  };
 }
 `;
 }
