@@ -36,8 +36,8 @@ export interface CompileResult {
 
 export async function compile(options: CompileOptions): Promise<CompileResult> {
   const config = await loadConfig(options.configPath);
-  if (options.outputDir) config.outputDir = options.outputDir;
   const projectRoot = path.dirname(options.configPath);
+  config.outputDir = path.resolve(projectRoot, options.outputDir ?? config.outputDir);
   const messagesDir = path.resolve(projectRoot, config.messagesDir);
 
   const allErrors: CompileResult["errors"] = [];
