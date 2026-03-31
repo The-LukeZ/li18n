@@ -52,6 +52,25 @@ makeCli({
         await runCheck(resolveConfig(options.config));
       },
     },
+    {
+      name: "init",
+      description: "Initialize a new li18n config file in the current directory",
+      handler: async () => {
+        const configPath = path.resolve("li18n.config.json");
+        if (await Bun.file(configPath).exists()) {
+          console.error(`Error: "li18n.config.json" already exists in this directory.`);
+          process.exit(1);
+        }
+        const defaultConfig = {
+          locales: ["en", "de"],
+          defaultLocale: "en",
+          messagesDir: "./locales",
+          outputDir: "./src/i18n",
+        };
+        await Bun.write(configPath, JSON.stringify(defaultConfig, null, 2));
+        console.log(`Created new config file at ${configPath}`);
+      },
+    },
   ],
 });
 
