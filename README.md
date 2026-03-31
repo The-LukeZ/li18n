@@ -71,7 +71,8 @@ messages/
 ### 4. Build
 
 ```bash
-npx li18n build
+npm li18n build
+bun li18n build
 ```
 
 This generates typed TypeScript files in `outputDir`. Import and use:
@@ -249,9 +250,9 @@ const greeting = (p: { isLoggedIn: boolean; name: string }): string =>
 ## CLI
 
 ```bash
-npx li18n build    # compile once
-npx li18n watch    # recompile on changes
-npx li18n check    # check all locales for missing or extra keys
+npm li18n build    # compile once
+npm li18n watch    # recompile on changes
+npm li18n check    # check all locales for missing or extra keys
 ```
 
 All commands accept `--config <path>` (default: `li18n.config.json`).
