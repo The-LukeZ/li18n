@@ -1,0 +1,21 @@
+{
+  "greeting": "Hallo {name}!",
+  "farewell": "Auf Wiedersehen",
+  "nav": {
+    "home": "Startseite",
+    "about": "Über uns"
+  },
+  "role": [{ "var": { "bool": "isAdmin" }, "cases": { "true": "Admin", "false": "Benutzer" } }],
+  "items": [
+    {
+      "var": { "num": "count" },
+      "cases": { "1": "Ein Artikel", ">= 10": "Viele Artikel", "else": "{count} Artikel" }
+    }
+  ],
+  "lang": [
+    {
+      "var": "locale",
+      "cases": { "en": "Englisch", "de": "Deutsch", "else": "Andere" }
+    }
+  ]
+}

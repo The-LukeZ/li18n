@@ -1,0 +1,29 @@
+{
+  "name": "li18n",
+  "version": "0.0.0",
+  "module": "src/index.ts",
+  "type": "module",
+  "bin": {
+    "li18n": "./bin/li18n.ts"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "bun run bin/li18n.ts",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
+    "test": "bun test && bun bin/li18n.ts build --config tests/fixture/li18n.config.json"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "prettier": "^3.8.1",
+    "tsdown": "^0.21.7"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "make-cli": "^6.0.2",
+    "zod": "^4.3.6"
+  },
+  "license": "MIT"
+}
