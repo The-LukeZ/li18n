@@ -2,6 +2,10 @@
   "name": "li18n",
   "version": "0.1.0",
   "type": "module",
+  "repository": {
+    "url": "git+https://github.com/The-LukeZ/li18n.git"
+  },
+  "homepage": "https://github.com/The-LukeZ/li18n?tab=readme-ov-file",
   "bin": {
     "li18n": "./bin/li18n.ts"
   },
