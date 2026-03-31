@@ -94,8 +94,8 @@ import { AsyncLocalStorage } from "node:async_hooks";
 export type Locale = ${localeUnion};
 export type MaybePromise<T> = T | Promise<T>;
 
-export const locales: Locale[] = ${localesArray};
-export const baseLocale: Locale = ${JSON.stringify(defaultLocale)};
+export const locales: Locale[] = ${localesArray} as const;
+export const baseLocale: Locale = ${JSON.stringify(defaultLocale)} as const;
 
 export const localeStorage = new AsyncLocalStorage<Locale>();
 
