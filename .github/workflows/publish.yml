@@ -19,7 +19,7 @@ jobs:
       - run: bun run build
       - uses: actions/setup-node@v4
         with:
-          node-version: "lts/*"
+          node-version: "24"
           registry-url: "https://registry.npmjs.org"
       - name: Publish to npm
         run: npm publish --provenance --access public
