@@ -85,6 +85,22 @@ describe("parseLocaleFile", () => {
     expect(tree["user.settings.title"]).toEqual({ kind: "string", template: "Settings", vars: [] });
   });
 
+  test("flattens nested conditional node with dot key", () => {
+    const tree = parseLocaleFile(
+      JSON.stringify({
+        nav: { status: [{ var: "isActive", cases: { true: "Active", false: "Inactive" } }] },
+      }),
+      "en.json",
+    );
+    const node = tree["nav.status"]!;
+    expect(node.kind).toBe("conditional");
+    if (node.kind === "conditional") {
+      expect(node.condVar).toBe("isActive");
+      expect(node.cases.find((c) => c.key === "true")?.value).toBe("Active");
+    }
+    expect("nav" in tree).toBe(false);
+  });
+
   test("parses a plain string conditional", () => {
     const tree = parseLocaleFile(
       JSON.stringify({
