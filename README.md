@@ -10,6 +10,9 @@ A simple, type-safe i18n library for JavaScript/TypeScript. Define your messages
 
 — all defined directly in JSON, all type-checked at compile time.
 
+> [!IMPORTANT]
+> This is a beta project. As of now, it should work but don't be surprised if you encounter bugs or rough edges. Feedback and contributions are very welcome!
+
 ---
 
 ## How it works
