@@ -34,7 +34,14 @@
     ".": "./dist/index.mjs",
     "./*": "./*"
   },
-  "files": ["dist", "bin", "README.md", "LICENSE", "package.json", ".gitignore"],
+  "files": [
+    "dist",
+    "bin",
+    "README.md",
+    "LICENSE",
+    "package.json",
+    ".gitignore"
+  ],
   "publishConfig": {
     "provenance": true
   }
