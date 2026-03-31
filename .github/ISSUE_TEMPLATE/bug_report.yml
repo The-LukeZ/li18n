@@ -51,14 +51,6 @@ body:
       required: true
 
   - type: input
-    id: li18n_version
-    attributes:
-      label: li18n version
-      placeholder: "e.g. 0.1.2"
-    validations:
-      required: true
-
-  - type: input
     id: runtime_version
     attributes:
       label: Bun / Node version
