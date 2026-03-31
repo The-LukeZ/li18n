@@ -52,11 +52,54 @@ On npm the package is named `@the-lukez/li18n` (not just `li18n`) to avoid confl
 ### Key conventions
 
 - `src/config.ts` exports `loadConfig(configPath)` — async, throws on invalid config.
-- `src/parser.ts` exports `parseLocaleFile(jsonText, filePath)` — Zod-validates structure, then builds a flat `MessageTree`.
-- `src/analyzer.ts` infers/validates `condType` and collects variables — runs after the parser.
-- `src/codegen.ts` generates `.ts` source per message key.
-- `src/writer.ts` writes all output files; `runtime.ts` is written once and never overwritten.
-- CLI entry: `bin/li18n.ts` — commands: `build`, `watch`, `check`.
+- `src/parser.ts` exports `parseLocaleFile(jsonText, filePath)` — Zod-validates structure, then builds a flat `MessageTree`. Also exports `extractVars(template)`.
+- `src/analyzer.ts` infers/validates `condType` and collects variables — runs after the parser. Exports `analyzeTree(raw, filePath): AnalyzeResult`.
+- `src/codegen.ts` exports `generateMessageFile(key, exportName, locales, defaultLocale)` — generates `.ts` source per message key.
+- `src/writer.ts` writes all output files; exports `keyToExportName(key)` (dot-keys → camelCase). `runtime.ts` is written once and never overwritten.
+- `src/index.ts` exports `compile(options: CompileOptions): Promise<CompileResult>` — orchestrates the full pipeline.
+- CLI entry: `bin/li18n.ts` — commands: `build`, `watch`, `check`, `init`.
 - CLI is built with **`make-cli`** (`import makeCli from "make-cli"`). Commands are declared via `makeCli({ name, commands: [...] })` — each command has `name`, `description`, `options[]`, and an async `handler`.
 - Shared `configOption` (`--config <path>`, default `li18n.config.json`) is defined once and spread into each command's `options` array.
 - Adding a new command: add an entry to the `commands` array in `bin/li18n.ts` and implement the handler as a top-level `async function run<Name>(...)`.
+
+### CLI commands
+
+| Command | Description | Options |
+|---------|-------------|---------|
+| `build` | Compile locale files once | `--config` |
+| `watch` | Recompile on changes to messagesDir | `--config` |
+| `check` | Validate keys across all locales, no output written | `--config` |
+| `init` | Create a default `li18n.config.json` in the current directory | — |
+
+### Runtime output (generated files)
+
+`writer.ts` produces these files in `outputDir`:
+
+- `messages/<key>.ts` — one per key; imports `getLocale` from runtime, has private per-locale functions, and an exported dispatch function with a `switch` on `getLocale()`.
+- `messages/_index.ts` — re-exports all message functions.
+- `index.ts` — root re-export of messages and runtime functions.
+- `runtime.ts` — written **only if it doesn't exist**. Contains: `Locale` union type, `MaybePromise<T>`, `locales`, `baseLocale`, `localeStorage` (AsyncLocalStorage), `setLocale`, `getLocale`, and `withLocale`.
+- `.gitignore` — marks the output dir as auto-generated.
+
+### Runtime API
+
+- **`setLocale(locale)`** — sets a global `_locale` variable.
+- **`getLocale()`** — returns `localeStorage.getStore() ?? _locale` (async context takes priority).
+- **`withLocale(handler, getLocaleFromHandler)`** — wraps a handler to run in an isolated `AsyncLocalStorage` scope; `getLocaleFromHandler(args)` resolves the locale per-call (can be `MaybePromise<Locale>`). Always returns a `Promise`.
+
+### Testing
+
+Tests live in `tests/`. Run with `bun test` (the `test` script also runs a fixture compile first).
+
+| File | Covers |
+|------|--------|
+| `schemas.test.ts` | Zod schemas, `formatZodError` |
+| `parser.test.ts` | `parseLocaleFile`, `extractVars`, flattening, conditional parsing |
+| `analyzer.test.ts` | Type inference (bool/number/string), validation errors, `allVars` |
+| `codegen.test.ts` | Code generation for all node types, multi-locale dispatch |
+| `writer.test.ts` | `keyToExportName` |
+| `config.test.ts` | `loadConfig` validation and error cases |
+| `index.test.ts` | `withLocale` runtime helper |
+| `integration.test.ts` | Full `compile()` pipeline against `tests/fixture/` |
+
+Helpers like `stringNode()`, `conditionalNode()`, `locales()` are defined inside test files to construct AST test data. Fixture files live in `tests/fixture/`.
