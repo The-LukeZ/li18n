@@ -1,13 +1,13 @@
 {
   "name": "@the-lukez/li18n",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "repository": {
     "url": "git+https://github.com/The-LukeZ/li18n.git"
   },
   "homepage": "https://github.com/The-LukeZ/li18n?tab=readme-ov-file",
   "bin": {
-    "li18n": "bin/li18n.ts"
+    "li18n": "dist/bin/li18n.mjs"
   },
   "scripts": {
     "build": "tsdown",
@@ -39,7 +39,6 @@
   },
   "files": [
     "dist",
-    "bin",
     "README.md",
     "LICENSE",
     "package.json",
