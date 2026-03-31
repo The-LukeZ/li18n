@@ -30,6 +30,9 @@
     "zod": "^4.3.6"
   },
   "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
   "exports": {
     ".": "./dist/index.mjs",
     "./*": "./*"
