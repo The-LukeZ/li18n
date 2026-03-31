@@ -23,6 +23,8 @@ export interface CompileOptions {
   configPath: string;
   /** Override the outputDir from the config file */
   outputDir?: string;
+  /** Delete the messages/ directory before writing (removes stale key files). Overrides the config value. */
+  clean?: boolean;
 }
 
 export interface CompileResult {
@@ -66,7 +68,8 @@ export async function compile(options: CompileOptions): Promise<CompileResult> {
   }
 
   if (Object.keys(compiledLocales).length > 0) {
-    await writeOutput(compiledLocales, config);
+    const shouldClean = options.clean ?? config.clean;
+    await writeOutput(compiledLocales, config, shouldClean);
   }
 
   const keyCount = Object.keys(compiledLocales[config.defaultLocale] ?? {}).length;

@@ -55,7 +55,8 @@ Add `li18n.config.json` to your project root:
   "locales": ["en", "de"],
   "defaultLocale": "en",
   "messagesDir": "./messages",
-  "outputDir": "./src/i18n"
+  "outputDir": "./src/i18n",
+  "clean": true // optional, defaults to true — set to false to skip deleting the output directory before building (useful if you have other files in there you don't want deleted)
 }
 ```
 
@@ -258,6 +259,10 @@ npm li18n check    # check all locales for missing or extra keys
 
 All commands accept `--config <path>` (default: `li18n.config.json`).
 
+The `build` command also accepts `--no-clean` to skip deleting the `messages/` output directory before building (overrides the `clean` config field).
+
+Run any command with `--help` for more info.
+
 ---
 
 ## Runtime API
@@ -287,12 +292,13 @@ await myHandler(req); // locale is resolved from each individual request
 
 ## Config reference
 
-| Field           | Type       | Description                                           |
-| --------------- | ---------- | ----------------------------------------------------- |
-| `locales`       | `string[]` | Supported locale codes (e.g. ISO 639-1)               |
-| `defaultLocale` | `string`   | Fallback locale — must be one of `locales`            |
-| `messagesDir`   | `string`   | Path to the folder containing locale JSON files       |
-| `outputDir`     | `string`   | Path where generated TypeScript files will be written |
+| Field           | Type       | Default | Description                                                                         |
+| --------------- | ---------- | ------- | ----------------------------------------------------------------------------------- |
+| `locales`       | `string[]` | —       | Supported locale codes (e.g. ISO 639-1)                                             |
+| `defaultLocale` | `string`   | —       | Fallback locale — must be one of `locales`                                          |
+| `messagesDir`   | `string`   | —       | Path to the folder containing locale JSON files                                     |
+| `outputDir`     | `string`   | —       | Path where generated TypeScript files will be written                               |
+| `clean`         | `boolean`  | `true`  | Delete the `messages/` output directory before each build to remove stale key files |
 
 ---
 

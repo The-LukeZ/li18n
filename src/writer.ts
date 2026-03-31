@@ -15,9 +15,13 @@ import { generateMessageFile } from "./codegen.ts";
 
 // Public API
 
-export async function writeOutput(locales: CompiledLocales, config: Li18nConfig): Promise<void> {
+export async function writeOutput(locales: CompiledLocales, config: Li18nConfig, clean: boolean): Promise<void> {
   const { outputDir, defaultLocale } = config;
   const messagesDir = path.join(outputDir, "messages");
+
+  if (clean) {
+    await Bun.$`rm -rf ${messagesDir}`.quiet();
+  }
 
   // Collect all keys (use defaultLocale as canonical source)
   const defaultTree = locales[defaultLocale];

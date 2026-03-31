@@ -12,7 +12,7 @@ describe("Li18nConfigSchema", () => {
 
   test("accepts a valid config", () => {
     const result = Li18nConfigSchema.parse(valid);
-    expect(result).toEqual(valid);
+    expect(result).toEqual({ ...valid, clean: true });
   });
 
   test("rejects empty locales array", () => {

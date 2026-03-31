@@ -22,6 +22,12 @@ const configOption = {
   defaultValue: "li18n.config.json",
 };
 
+const cleanOption = {
+  name: "--no-clean",
+  description: "Skip cleaning output directory before building",
+  defaultValue: false,
+};
+
 function resolveConfig(config: string): string {
   return path.resolve(config);
 }
@@ -32,9 +38,9 @@ makeCli({
     {
       name: "build",
       description: "Compile once",
-      options: [configOption],
-      handler: async (options: { config: string }) => {
-        await runBuild(resolveConfig(options.config));
+      options: [configOption, cleanOption],
+      handler: async (options: { config: string; "no-clean": boolean }) => {
+        await runBuild(resolveConfig(options.config), options["no-clean"] ?? false);
       },
     },
     {
@@ -77,9 +83,9 @@ makeCli({
 
 // Commands
 
-async function runBuild(configPath: string): Promise<void> {
+async function runBuild(configPath: string, noClean: boolean): Promise<void> {
   log.build("building…");
-  const result = await compile({ configPath });
+  const result = await compile({ configPath, clean: !noClean });
 
   if (result.errors.length > 0) {
     for (const e of result.errors) {
@@ -98,7 +104,7 @@ async function runWatch(configPath: string): Promise<void> {
   const messagesDir = path.resolve(projectRoot, config.messagesDir);
 
   // Initial build
-  await runBuild(configPath);
+  await runBuild(configPath, true);
 
   // Watch the messages directory via Node-compatible fs.watch
   const { watch } = await import("node:fs");

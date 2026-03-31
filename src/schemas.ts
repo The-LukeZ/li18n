@@ -14,6 +14,7 @@ export const Li18nConfigSchema = z
     defaultLocale: z.string(),
     messagesDir: z.string(),
     outputDir: z.string(),
+    clean: z.boolean().default(true),
   })
   .superRefine((c, ctx) => {
     if (!c.locales.includes(c.defaultLocale)) {
