@@ -61,6 +61,9 @@ export async function writeOutput(
 
   // Write .gitignore to exclude all generated files from version control
   await writeFile(path.join(outputDir, ".gitignore"), "*\n");
+
+  // ignore prettier formatting for generated files
+  await writeFile(path.join(outputDir, ".prettierignore"), "*\n");
 }
 
 // File content builders
