@@ -40,7 +40,9 @@ m.itemCount({ count: 3 }); // → "3 items"
 ### 1. Install
 
 ```bash
-bun add @the-lukez/li18n
+bun add -D @the-lukez/li18n
+# or
+npm install -D @the-lukez/li18n
 ```
 
 ### 2. Create a config file
