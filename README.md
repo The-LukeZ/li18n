@@ -342,6 +342,32 @@ await myHandler(req); // locale is resolved from each individual request
 
 ---
 
+## Troubleshooting
+
+<details>
+  <summary>"No overload matches this call."</summary>
+
+This error usually occurs when you call a message function with variables, supply the variables but the values have insufficient types.
+
+Exmaple:
+
+```ts
+m.greeting({ name: "Alice" }); // ✅ works
+m.greeting({ name: 123 }); // ❌ error: "No overload matches this call."
+```
+
+The most common source is, when you have a string template variable (e.g. `{name}`) but you pass a non-string value (e.g. `123`).
+The generated function expects the variable to be of the type `string` if no conditionals are involved. So passing a number will cause a type error.
+To fix this, make sure to pass the correct types for all variables. In this example, you should pass a string for `name`:
+
+```ts
+m.greeting({ name: "123" }); // ✅ works
+```
+
+</details>
+
+---
+
 ## Backlog
 
 - Support subfolders in `messagesDir`  
