@@ -1,5 +1,10 @@
 # li18n
 
+[![npm version](https://shields.io/npm/v/li18n?color=crimson&style=flat-square)](https://www.npmjs.com/package/li18n)
+[![License](https://badgen.net/badge/license/MIT/blue)](https://www.npmjs.com/package/li18n)
+[![Build Status](https://badgen.net/github/checks/The-LukeZ/li18n)](https://github.com/The-LukeZ/li18n/actions)
+[![Coverage](https://badgen.net/codecov/c/github/The-LukeZ/li18n)](https://codecov.io/gh/The-LukeZ/li18n)
+
 A simple, type-safe i18n library for JavaScript/TypeScript. Define your messages in JSON, get fully-typed TypeScript functions out.
 
 **Key features:**
