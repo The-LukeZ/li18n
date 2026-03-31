@@ -15,7 +15,11 @@ import { generateMessageFile } from "./codegen.ts";
 
 // Public API
 
-export async function writeOutput(locales: CompiledLocales, config: Li18nConfig, clean: boolean): Promise<void> {
+export async function writeOutput(
+  locales: CompiledLocales,
+  config: Li18nConfig,
+  clean: boolean,
+): Promise<void> {
   const { outputDir, defaultLocale } = config;
   const messagesDir = path.join(outputDir, "messages");
 
