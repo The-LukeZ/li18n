@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "li18n Config",
+  "description": "Configuration file for the li18n locale compiler",
+  "type": "object",
+  "properties": {
+    "locales": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "defaultLocale": {
+      "type": "string"
+    },
+    "messagesDir": {
+      "type": "string"
+    },
+    "outputDir": {
+      "type": "string"
+    },
+    "clean": {
+      "default": true,
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "locales",
+    "defaultLocale",
+    "messagesDir",
+    "outputDir"
+  ]
+}

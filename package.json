@@ -10,7 +10,7 @@
     "li18n": "dist/bin/li18n.mjs"
   },
   "scripts": {
-    "build": "tsdown",
+    "build": "tsdown && bun scripts/generate-schema.ts",
     "dev": "bun run bin/li18n.ts",
     "format:check": "prettier --check .",
     "format": "prettier --write .",
@@ -35,10 +35,12 @@
   },
   "exports": {
     ".": "./dist/index.mjs",
+    "./li18n.schema.json": "./li18n.schema.json",
     "./*": "./*"
   },
   "files": [
     "dist",
+    "li18n.schema.json",
     "README.md",
     "LICENSE",
     "package.json",

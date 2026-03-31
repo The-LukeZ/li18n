@@ -52,13 +52,15 @@ Add `li18n.config.json` to your project root:
 
 ```json
 {
+  "$schema": "./node_modules/@the-lukez/li18n/li18n.schema.json",
   "locales": ["en", "de"],
   "defaultLocale": "en",
   "messagesDir": "./messages",
-  "outputDir": "./src/i18n",
-  "clean": true // optional, defaults to true — set to false to skip deleting the output directory before building (useful if you have other files in there you don't want deleted)
+  "outputDir": "./src/i18n"
 }
 ```
+
+The `$schema` field enables IDE autocomplete and inline validation. `clean` is optional and defaults to `true`.
 
 ### 3. Create your locale files
 

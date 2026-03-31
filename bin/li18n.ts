@@ -69,6 +69,7 @@ makeCli({
           process.exit(1);
         }
         const defaultConfig = {
+          $schema: "./node_modules/@the-lukez/li18n/li18n.schema.json",
           locales: ["en", "de"],
           defaultLocale: "en",
           messagesDir: "./locales",
