@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report a bug or unexpected behavior in li18n
+description: Report a bug or unexpected behavior in @the-lukez/li18n
 labels: ["bug"]
 assignees:
   - The-LukeZ
@@ -11,7 +11,7 @@ body:
       options:
         - label: I searched existing issues and found no duplicate
           required: true
-        - label: I tested with the latest version of li18n
+        - label: I tested with the latest version of @the-lukez/li18n
           required: true
 
   - type: textarea

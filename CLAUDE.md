@@ -36,6 +36,10 @@ For more information, read the Bun API docs in `node_modules/bun-types/docs/**.m
 
 Compilation pipeline: `src/parser.ts` → `src/analyzer.ts` → `src/codegen.ts` → `src/writer.ts`
 
+### Project Name
+
+On npm the package is named `@the-lukez/li18n` (not just `li18n`) to avoid conflicts with existing packages. The CLI command is still `li18n` for simplicity.
+
 ### Validation
 
 - All external input is validated with **Zod** (`zod` is a runtime dependency).

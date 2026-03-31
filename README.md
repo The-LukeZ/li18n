@@ -1,7 +1,7 @@
 # li18n
 
-[![npm version](https://shields.io/npm/v/li18n?color=crimson&style=flat-square)](https://www.npmjs.com/package/li18n)
-[![License](https://badgen.net/badge/license/MIT/blue)](https://www.npmjs.com/package/li18n)
+[![npm version](https://shields.io/npm/v/@the-lukez/li18n?color=crimson&style=flat-square)](https://www.npmjs.com/package/@the-lukez/li18n)
+[![License](https://badgen.net/badge/license/MIT/blue)](https://www.npmjs.com/package/@the-lukez/li18n)
 [![Build Status](https://badgen.net/github/checks/The-LukeZ/li18n)](https://github.com/The-LukeZ/li18n/actions)
 
 <!-- [![Coverage](https://badgen.net/codecov/c/github/The-LukeZ/li18n)](https://codecov.io/gh/The-LukeZ/li18n) -->
@@ -40,7 +40,7 @@ m.itemCount({ count: 3 }); // → "3 items"
 ### 1. Install
 
 ```bash
-bun add li18n
+bun add @the-lukez/li18n
 ```
 
 ### 2. Create a config file
