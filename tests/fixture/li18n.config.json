@@ -3,6 +3,6 @@
   "locales": ["en", "de"],
   "defaultLocale": "en",
   "messagesDir": "messages",
-  "outputDir": "tests/fixture/generated",
+  "outputDir": "generated",
   "clean": true
 }
