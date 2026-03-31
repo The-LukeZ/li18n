@@ -20,7 +20,7 @@ export function generateMessageFile(
 ): string {
   const lines: string[] = [
     `// AUTO-GENERATED - do not edit`,
-    `import { getLocale } from "../runtime.ts";`,
+    `import { getLocale, type Locale } from "../runtime.ts";`,
     ``,
   ];
 
@@ -44,8 +44,25 @@ export function generateMessageFile(
   lines.push(``);
 
   // Emit dispatch function
-  lines.push(`export const ${exportName} = (${paramArg}): string => {`);
-  lines.push(`  switch (getLocale()) {`);
+  if (paramType) {
+    // With params: emit overloads so callers can pass locale-only or params+locale
+    lines.push(`export function ${exportName}(pOrLocale?: Locale): string;`);
+    lines.push(`export function ${exportName}(pOrLocale?: ${paramType}, locale?: Locale): string;`);
+    lines.push(
+      `export function ${exportName}(pOrLocale?: ${paramType} | Locale, locale?: Locale): string {`,
+    );
+    lines.push(
+      `  const p = (typeof pOrLocale === "string" ? {} : pOrLocale) as ${paramType};`,
+    );
+    lines.push(
+      `  const loc = typeof pOrLocale === "string" ? pOrLocale : locale ?? getLocale();`,
+    );
+  } else {
+    lines.push(`export function ${exportName}(locale?: Locale): string {`);
+    lines.push(`  const loc = locale ?? getLocale();`);
+  }
+
+  lines.push(`  switch (loc) {`);
 
   for (const locale of Object.keys(locales)) {
     if (locale === defaultLocale) continue;
@@ -56,7 +73,7 @@ export function generateMessageFile(
   lines.push(`    default:`);
   lines.push(`      return _${defaultLocale}(${callArg});`);
   lines.push(`  }`);
-  lines.push(`};`);
+  lines.push(`}`);
   lines.push(``);
 
   return lines.join("\n");

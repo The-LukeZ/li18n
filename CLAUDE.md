@@ -75,7 +75,7 @@ On npm the package is named `@the-lukez/li18n` (not just `li18n`) to avoid confl
 
 `writer.ts` produces these files in `outputDir`:
 
-- `messages/<key>.ts` — one per key; imports `getLocale` from runtime, has private per-locale functions, and an exported dispatch function with a `switch` on `getLocale()`.
+- `messages/<key>.ts` — one per key; imports `getLocale` and `type Locale` from runtime, has private per-locale functions, and an exported dispatch function. No-params messages export `function name(locale?: Locale): string`; messages with params export two overloads (`(pOrLocale?: Locale)` and `(pOrLocale?: ParamType, locale?: Locale)`) plus an implementation that extracts `p` and `loc` before the `switch`.
 - `messages/_index.ts` — re-exports all message functions.
 - `index.ts` — root re-export of messages and runtime functions.
 - `runtime.ts` — written **only if it doesn't exist**. Contains: `Locale` union type, `MaybePromise<T>`, `locales`, `baseLocale`, `localeStorage` (AsyncLocalStorage), `setLocale`, `getLocale`, and `withLocale`.

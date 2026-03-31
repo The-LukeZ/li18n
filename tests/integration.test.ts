@@ -81,12 +81,12 @@ describe("compile() - full pipeline", () => {
     await compile({ configPath: CONFIG_PATH, outputDir: OUTPUT_DIR });
     const content = await Bun.file(path.join(OUTPUT_DIR, "messages/greeting.ts")).text();
     expect(content).toContain("// AUTO-GENERATED - do not edit");
-    expect(content).toContain(`import { getLocale } from "../runtime.ts"`);
+    expect(content).toContain(`import { getLocale, type Locale } from "../runtime.ts"`);
     expect(content).toContain("const _en =");
     expect(content).toContain("const _de =");
     expect(content).toContain(`case "de":`);
     expect(content).toContain("default:");
-    expect(content).toContain("export const greeting =");
+    expect(content).toContain("export function greeting");
   });
 
   test("boolean conditional message file has boolean param", async () => {

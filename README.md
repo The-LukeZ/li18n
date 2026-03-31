@@ -1,9 +1,11 @@
 # li18n
 
-[![npm version](https://badgen.net/npm/v/@the-lukez/li18n)](https://www.npmjs.com/package/@the-lukez/li18n)
-[![License](https://badgen.net/badge/license/MIT/blue)](https://www.npmjs.com/package/@the-lukez/li18n)
-[![Open Issues](https://badgen.net/github/issues/The-LukeZ/li18n)](https://github.com/The-LukeZ/li18n/issues?q=is%3Aissue+is%3Aopen)
-[![Closed Issues](https://badgen.net/github/closed-issues/The-LukeZ/li18n)](https://github.com/The-LukeZ/li18n/issues?q=is%3Aissue+is%3Aclosed)
+<!-- The ?<num> is added because of caching. Caching time is very long it seems. -->
+
+[![npm version](https://badgen.net/npm/v/@the-lukez/li18n?2)](https://www.npmjs.com/package/@the-lukez/li18n)
+[![License](https://badgen.net/badge/license/MIT/blue?2)](https://www.npmjs.com/package/@the-lukez/li18n)
+[![Open Issues](https://badgen.net/github/issues/The-LukeZ/li18n?2)](https://github.com/The-LukeZ/li18n/issues?q=is%3Aissue+is%3Aopen)
+[![Closed Issues](https://badgen.net/github/closed-issues/The-LukeZ/li18n?2)](https://github.com/The-LukeZ/li18n/issues?q=is%3Aissue+is%3Aclosed)
 
 <!-- [![Coverage](https://badgen.net/codecov/c/github/The-LukeZ/li18n)](https://codecov.io/gh/The-LukeZ/li18n) -->
 
@@ -29,7 +31,9 @@ li18n compiles your JSON locale files into TypeScript modules. Each message key 
 ```ts
 import { m } from "./src/i18n";
 
-m.greeting({ name: "Alice" }); // → "Hello Alice!"
+m.greeting({ name: "Alice" }); // → "Hello Alice!" (uses active locale)
+m.greeting({ name: "Alice" }, "de"); // → "Hallo Alice!" (locale override)
+m.greeting("de"); // → "Hallo !" (locale override, no params)
 m.userStatus({ isOnline: true }); // → "Online"
 m.itemCount({ count: 3 }); // → "3 items"
 ```
@@ -151,7 +155,11 @@ Cases: `"true"` and/or `"false"` (+ optional `"else"` as alias for `"false"`).
 Generated:
 
 ```ts
-const status = (p: { isOnline: boolean }): string => (p.isOnline ? "Online" : "Offline");
+export function status(pOrLocale?: Locale): string;
+export function status(pOrLocale?: { isOnline: boolean }, locale?: Locale): string;
+export function status(pOrLocale?: { isOnline: boolean } | Locale, locale?: Locale): string {
+  // ...
+}
 ```
 
 #### String conditional
@@ -176,8 +184,11 @@ Cases: any string values. `"else"` is the fallback.
 Generated:
 
 ```ts
-const role = (p: { userRole: string }): string =>
-  p.userRole === "admin" ? "Administrator" : p.userRole === "moderator" ? "Moderator" : "User";
+export function role(pOrLocale?: Locale): string;
+export function role(pOrLocale?: { userRole: string }, locale?: Locale): string;
+export function role(pOrLocale?: { userRole: string } | Locale, locale?: Locale): string {
+  // ...
+}
 ```
 
 #### Number conditional (pluralization)
@@ -218,12 +229,11 @@ Supported operators: `===`, `!==`, `>`, `>=`, `<`, `<=`. A bare number (e.g. `"1
 Generated:
 
 ```ts
-const score = (p: { points: number }): string =>
-  p.points >= 100
-    ? `Expert: ${p.points} pts`
-    : p.points === 50
-      ? `Advanced: ${p.points} pts`
-      : `Beginner: ${p.points} pts`;
+export function score(pOrLocale?: Locale): string;
+export function score(pOrLocale?: { points: number }, locale?: Locale): string;
+export function score(pOrLocale?: { points: number } | Locale, locale?: Locale): string {
+  // ...
+}
 ```
 
 #### Interpolation in conditionals
@@ -245,9 +255,31 @@ Any `{var}` references in case strings are interpolated normally. All referenced
 ```
 
 ```ts
-const greeting = (p: { isLoggedIn: boolean; name: string }): string =>
-  p.isLoggedIn ? `Hello ${p.name}!` : "Hello Guest!";
+export function greeting(pOrLocale?: Locale): string;
+export function greeting(pOrLocale?: { isLoggedIn: boolean; name: string }, locale?: Locale): string;
+export function greeting(pOrLocale?: { isLoggedIn: boolean; name: string } | Locale, locale?: Locale): string {
+  // ...
+}
 ```
+
+---
+
+## Locale override
+
+Every generated message function accepts an optional locale argument, letting you bypass the active locale on a per-call basis.
+
+```ts
+// No params — locale only or nothing
+m.farewell();         // uses getLocale()
+m.farewell("de");     // forced to "de"
+
+// With params — params first, locale second
+m.greeting({ name: "Alice" });         // uses getLocale()
+m.greeting({ name: "Alice" }, "de");   // forced to "de"
+m.greeting("de");                      // forced to "de", no params
+```
+
+This is useful when you need a specific locale without changing the global locale state — for example, rendering an email in the recipient's language while your server's locale is set to something else.
 
 ---
 
@@ -310,3 +342,4 @@ await myHandler(req); // locale is resolved from each individual request
   Message keys are then joined with dots (e.g. `errors/en.json` → `errors.someKey`) OR generate named exports for subfolders (e.g. `import { m } from "./i18n/errors"`).
 - YAML support (e.g. `en.yaml` instead of `en.json`). However that could be a separate package that uses the same core compiler, so maybe not a priority right now.
 - Support custom variable types (e.g. dates, currencies) with custom formatting options. This would require a way to define custom variable types and their corresponding TypeScript types and runtime formatting logic.
+- if value is string[], then let config file decide what to do: "newline" (join with `\n`), "space" (join with space), "array" (keep as array and generate a function that returns string[] instead of string).

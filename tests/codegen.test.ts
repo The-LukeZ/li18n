@@ -43,9 +43,9 @@ describe("generateMessageFile - header", () => {
     expect(output).toContain("// AUTO-GENERATED - do not edit");
   });
 
-  test("always imports getLocale from runtime", () => {
+  test("always imports getLocale and Locale from runtime", () => {
     const output = generateMessageFile("msg", "msg", locales({ en: { msg: stringNode() } }), "en");
-    expect(output).toContain(`import { getLocale } from "../runtime.ts";`);
+    expect(output).toContain(`import { getLocale, type Locale } from "../runtime.ts";`);
   });
 });
 
@@ -58,7 +58,7 @@ describe("generateMessageFile - string nodes", () => {
       "en",
     );
     expect(output).toContain("const _en = (): string =>");
-    expect(output).toContain("export const greeting = (): string =>");
+    expect(output).toContain("export function greeting(locale?: Locale): string");
   });
 
   test("string node with no vars renders as string literal", () => {
@@ -91,7 +91,7 @@ describe("generateMessageFile - string nodes", () => {
       locales({ en: { "nav.home": stringNode() } }),
       "en",
     );
-    expect(output).toContain("export const navHome =");
+    expect(output).toContain("export function navHome");
   });
 });
 
@@ -294,5 +294,60 @@ describe("generateMessageFile - error cases", () => {
         "en",
       ),
     ).toThrow(/greeting/);
+  });
+});
+
+describe("generateMessageFile - locale override", () => {
+  test("no-params message uses function declaration with optional locale param", () => {
+    const output = generateMessageFile(
+      "greeting",
+      "greeting",
+      locales({ en: { greeting: stringNode("Hello") } }),
+      "en",
+    );
+    expect(output).toContain("export function greeting(locale?: Locale): string");
+    expect(output).toContain("const loc = locale ?? getLocale()");
+    expect(output).toContain("switch (loc)");
+  });
+
+  test("with-params message emits two overloads plus implementation", () => {
+    const output = generateMessageFile(
+      "msg",
+      "msg",
+      locales({ en: { msg: stringNode("{name}", ["name"]) } }),
+      "en",
+    );
+    expect(output).toContain("export function msg(pOrLocale?: Locale): string;");
+    expect(output).toContain(
+      "export function msg(pOrLocale?: { name: string }, locale?: Locale): string;",
+    );
+    expect(output).toContain(
+      "export function msg(pOrLocale?: { name: string } | Locale, locale?: Locale): string {",
+    );
+    expect(output).toContain(`const p = (typeof pOrLocale === "string" ? {} : pOrLocale) as { name: string };`);
+    expect(output).toContain(`const loc = typeof pOrLocale === "string" ? pOrLocale : locale ?? getLocale();`);
+    expect(output).toContain("switch (loc)");
+  });
+
+  test("with-params dispatch passes p to locale functions", () => {
+    const output = generateMessageFile(
+      "msg",
+      "msg",
+      locales({ en: { msg: stringNode("{name}", ["name"]) }, de: { msg: stringNode("{name}", ["name"]) } }),
+      "en",
+    );
+    expect(output).toContain("return _de(p)");
+    expect(output).toContain("return _en(p)");
+  });
+
+  test("no-params dispatch does not pass p to locale functions", () => {
+    const output = generateMessageFile(
+      "greeting",
+      "greeting",
+      locales({ en: { greeting: stringNode() }, de: { greeting: stringNode() } }),
+      "en",
+    );
+    expect(output).toContain("return _de()");
+    expect(output).toContain("return _en()");
   });
 });
