@@ -6,7 +6,7 @@
 
 <!-- [![Coverage](https://badgen.net/codecov/c/github/The-LukeZ/li18n)](https://codecov.io/gh/The-LukeZ/li18n) -->
 
-A simple, type-safe i18n library for JavaScript/TypeScript. Define your messages in JSON, get fully-typed TypeScript functions out.
+A simple, type-safe i18n library for TypeScript. Define your messages in JSON, get fully-typed TypeScript functions out.
 
 **Key features:**
 
