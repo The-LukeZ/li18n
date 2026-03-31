@@ -14,6 +14,7 @@ import { compile } from "../src/index.ts";
 import { loadConfig } from "../src/config.ts";
 import { parseLocaleFile } from "../src/parser.ts";
 import { analyzeTree } from "../src/analyzer.ts";
+import { log } from "./utils/logger.ts";
 
 const configOption = {
   name: "--config <path>",
@@ -58,7 +59,7 @@ makeCli({
       handler: async () => {
         const configPath = path.resolve("li18n.config.json");
         if (await Bun.file(configPath).exists()) {
-          console.error(`Error: "li18n.config.json" already exists in this directory.`);
+          log.error(`"li18n.config.json" already exists in this directory.`);
           process.exit(1);
         }
         const defaultConfig = {
@@ -68,7 +69,7 @@ makeCli({
           outputDir: "./src/i18n",
         };
         await Bun.write(configPath, JSON.stringify(defaultConfig, null, 2));
-        console.log(`Created new config file at ${configPath}`);
+        log.success(`Created new config file at ${configPath}`);
       },
     },
   ],
@@ -77,21 +78,21 @@ makeCli({
 // Commands
 
 async function runBuild(configPath: string): Promise<void> {
-  console.log(`li18n: building…`);
+  log.build("building…");
   const result = await compile({ configPath });
 
   if (result.errors.length > 0) {
     for (const e of result.errors) {
-      console.error(`  [${e.locale}] ${e.key}: ${e.message}`);
+      log.localeError(e.locale, `${e.key}: ${e.message}`);
     }
     process.exit(1);
   }
 
-  console.log(`li18n: done - ${result.keyCount} key(s) compiled`);
+  log.success(`done - ${result.keyCount} key(s) compiled`);
 }
 
 async function runWatch(configPath: string): Promise<void> {
-  console.log(`li18n: watching for changes…`);
+  log.watch("watching for changes…");
   const config = await loadConfig(configPath);
   const projectRoot = path.dirname(configPath);
   const messagesDir = path.resolve(projectRoot, config.messagesDir);
@@ -103,12 +104,12 @@ async function runWatch(configPath: string): Promise<void> {
   const { watch } = await import("node:fs");
   watch(messagesDir, { persistent: true }, async (_event, filename) => {
     if (typeof filename === "string" && filename.endsWith(".json")) {
-      console.log(`li18n: change detected in ${filename}, rebuilding…`);
+      log.change(`change detected in ${filename}, rebuilding…`);
       try {
         await compile({ configPath });
-        console.log(`li18n: rebuild complete`);
+        log.success("rebuild complete");
       } catch (err) {
-        console.error(`li18n: rebuild failed -`, (err as Error).message);
+        log.error(`rebuild failed - ${(err as Error).message}`);
       }
     }
   });
@@ -128,7 +129,7 @@ async function runCheck(configPath: string): Promise<void> {
     const file = Bun.file(filePath);
 
     if (!(await file.exists())) {
-      console.error(`  [${locale}] missing locale file: ${filePath}`);
+      log.localeError(locale, `missing locale file: ${filePath}`);
       hasErrors = true;
       continue;
     }
@@ -139,11 +140,11 @@ async function runCheck(configPath: string): Promise<void> {
       const { errors } = analyzeTree(raw, filePath);
       trees[locale] = raw;
       for (const e of errors) {
-        console.error(`  [${locale}] ${e.key}: ${e.message}`);
+        log.localeError(locale, `${e.key}: ${e.message}`);
         hasErrors = true;
       }
     } catch (err) {
-      console.error(`  [${locale}] parse error: ${(err as Error).message}`);
+      log.localeError(locale, `parse error: ${(err as Error).message}`);
       hasErrors = true;
     }
   }
@@ -157,19 +158,19 @@ async function runCheck(configPath: string): Promise<void> {
 
     for (const k of defaultKeys) {
       if (!localeKeys.has(k)) {
-        console.error(`  [${locale}] missing key: "${k}"`);
+        log.localeError(locale, `missing key: "${k}"`);
         hasErrors = true;
       }
     }
     for (const k of localeKeys) {
       if (!defaultKeys.has(k)) {
-        console.warn(`  [${locale}] extra key not in default locale: "${k}"`);
+        log.localeWarn(locale, `extra key not in default locale: "${k}"`);
       }
     }
   }
 
   if (!hasErrors) {
-    console.log(`li18n: all locales are consistent (${defaultKeys.size} keys)`);
+    log.success(`all locales are consistent (${defaultKeys.size} keys)`);
   } else {
     process.exit(1);
   }
