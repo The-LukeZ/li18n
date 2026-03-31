@@ -52,6 +52,9 @@ export async function writeOutput(locales: CompiledLocales, config: Li18nConfig)
   if (!(await runtimeFile.exists())) {
     await writeFile(runtimePath, buildRuntimeFile(defaultLocale));
   }
+
+  // Write .gitignore to exclude all generated files from version control
+  await writeFile(path.join(outputDir, ".gitignore"), "*\n");
 }
 
 // ---------------------------------------------------------------------------
