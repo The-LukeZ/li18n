@@ -69,11 +69,7 @@ function buildIndexFile(entries: { key: string; exportName: string; fileName: st
   const lines = ["// AUTO-GENERATED - do not edit", ""];
   for (const { key, exportName, fileName } of entries) {
     const stem = fileName.replace(/\.ts$/, "");
-    lines.push(`export { ${exportName} } from "./${stem}.ts";`);
-    if (key !== exportName) {
-      // Also export under the original dot-notation key as a string literal
-      lines.push(`export { ${exportName} as "${key}" } from "./${stem}.ts";`);
-    }
+    lines.push(`export { ${exportName} as "${key}" } from "./${stem}.ts";`);
   }
   lines.push("");
   return lines.join("\n");
@@ -134,7 +130,7 @@ export function withLocale<T extends unknown[], R>(
  */
 export function keyToExportName(key: string): string {
   return key
-    .split(".")
+    .split(/[^a-zA-Z0-9]+/)
     .map((part, i) => (i === 0 ? part : capitalize(part)))
     .join("");
 }
