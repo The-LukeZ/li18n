@@ -1,6 +1,8 @@
 {
+  "$schema": "../../li18n.schema.json",
   "locales": ["en", "de"],
   "defaultLocale": "en",
   "messagesDir": "messages",
-  "outputDir": "tests/fixture/generated"
+  "outputDir": "tests/fixture/generated",
+  "clean": true
 }

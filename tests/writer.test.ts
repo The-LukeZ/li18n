@@ -30,3 +30,17 @@ describe("keyToExportName", () => {
     expect(keyToExportName("nav.myHome")).toBe("navMyHome");
   });
 });
+
+describe("filename derivation", () => {
+  test("flat key produces same filename stem as key", () => {
+    expect(`${keyToExportName("greeting")}.ts`).toBe("greeting.ts");
+  });
+
+  test("nested key produces camelCase filename (no dots in filename)", () => {
+    expect(`${keyToExportName("nav.home")}.ts`).toBe("navHome.ts");
+  });
+
+  test("deeply nested key produces camelCase filename", () => {
+    expect(`${keyToExportName("user.settings.title")}.ts`).toBe("userSettingsTitle.ts");
+  });
+});

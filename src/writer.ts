@@ -2,7 +2,7 @@
  * writer.ts - writes compiled output to disk.
  *
  * Responsibilities:
- *   - Write one messages/<key>.ts per message key
+ *   - Write one messages/<exportName>.ts per message key
  *   - Write messages/_index.ts (re-exports all keys)
  *   - Write index.ts (re-exports messages + runtime)
  *   - Write runtime.ts once (never overwritten if it already exists)
@@ -39,8 +39,8 @@ export async function writeOutput(
   const exportNames: { key: string; exportName: string; fileName: string }[] = [];
 
   for (const key of keys) {
-    const fileName = `${key}.ts`;
     const exportName = keyToExportName(key);
+    const fileName = `${exportName}.ts`;
     const content = generateMessageFile(key, exportName, locales, defaultLocale);
     await writeFile(path.join(messagesDir, fileName), content);
     exportNames.push({ key, exportName, fileName });
@@ -69,11 +69,10 @@ function buildIndexFile(entries: { key: string; exportName: string; fileName: st
   const lines = ["// AUTO-GENERATED - do not edit", ""];
   for (const { key, exportName, fileName } of entries) {
     const stem = fileName.replace(/\.ts$/, "");
-    if (key === exportName) {
-      lines.push(`export { ${exportName} } from "./${stem}.ts";`);
-    } else {
-      // key has dots → the export is already camelCase; use named re-export
-      lines.push(`export { ${exportName} } from "./${stem}.ts";`);
+    lines.push(`export { ${exportName} } from "./${stem}.ts";`);
+    if (key !== exportName) {
+      // Also export under the original dot-notation key as a string literal
+      lines.push(`export { ${exportName} as "${key}" } from "./${stem}.ts";`);
     }
   }
   lines.push("");

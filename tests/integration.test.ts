@@ -61,6 +61,8 @@ describe("compile() - full pipeline", () => {
     expect(content).toContain("farewell");
     expect(content).toContain("navHome");
     expect(content).toContain("navAbout");
+    expect(content).toContain('"nav.home"');
+    expect(content).toContain('"nav.about"');
     expect(content).toContain("role");
     expect(content).toContain("items");
     expect(content).toContain("lang");
@@ -68,7 +70,7 @@ describe("compile() - full pipeline", () => {
 
   test("writes a message file per key", async () => {
     await compile({ configPath: CONFIG_PATH, outputDir: OUTPUT_DIR });
-    const keys = ["greeting", "farewell", "nav.home", "nav.about", "role", "items", "lang"];
+    const keys = ["greeting", "farewell", "navHome", "navAbout", "role", "items", "lang"];
     for (const key of keys) {
       const file = Bun.file(path.join(OUTPUT_DIR, `messages/${key}.ts`));
       expect(await file.exists()).toBe(true);
