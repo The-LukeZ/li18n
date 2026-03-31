@@ -6,9 +6,7 @@
 
 import { z } from "zod";
 
-// ---------------------------------------------------------------------------
 // Config schema  (li18n.config.json)
-// ---------------------------------------------------------------------------
 
 export const Li18nConfigSchema = z
   .object({
@@ -30,9 +28,7 @@ export const Li18nConfigSchema = z
 
 export type Li18nConfig = z.infer<typeof Li18nConfigSchema>;
 
-// ---------------------------------------------------------------------------
 // Message JSON schemas  (messages/<locale>.json)
-// ---------------------------------------------------------------------------
 
 /** The "var" field inside a conditional: plain name or explicit type hint. */
 const VarFieldSchema = z.union([
@@ -73,9 +69,7 @@ export const MessageJsonSchema = z.record(z.string(), MessageValueSchema);
 
 export type RawLocaleJson = z.infer<typeof MessageJsonSchema>;
 
-// ---------------------------------------------------------------------------
 // Error formatter
-// ---------------------------------------------------------------------------
 
 /**
  * Converts a ZodError into a human-readable string prefixed with the file path.

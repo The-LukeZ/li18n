@@ -17,9 +17,7 @@ import type {
 } from "./schemas.ts";
 import type { MessageNode, MessageTree } from "./types.ts";
 
-// ---------------------------------------------------------------------------
 // Public API
-// ---------------------------------------------------------------------------
 
 export function parseLocaleFile(jsonText: string, filePath: string): MessageTree {
   let raw: unknown;
@@ -42,9 +40,7 @@ export function parseLocaleFile(jsonText: string, filePath: string): MessageTree
   return tree;
 }
 
-// ---------------------------------------------------------------------------
 // Internal helpers
-// ---------------------------------------------------------------------------
 
 function flattenObject(
   obj: Record<string, RawMessageValue>,
@@ -90,9 +86,7 @@ function parseVarField(varField: RawVarField): {
   return { condVar: varField.str, rawType: "string" };
 }
 
-// ---------------------------------------------------------------------------
 // Utility
-// ---------------------------------------------------------------------------
 
 /** Extracts {placeholder} names from a template string. */
 export function extractVars(template: string): string[] {

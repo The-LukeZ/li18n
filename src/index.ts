@@ -16,9 +16,7 @@ export { loadConfig } from "./config.ts";
 export type { Li18nConfig } from "./schemas.ts";
 export type { CompiledLocales, MessageNode, MessageTree } from "./types.ts";
 
-// ---------------------------------------------------------------------------
 // Main compile pipeline
-// ---------------------------------------------------------------------------
 
 export interface CompileOptions {
   /** Absolute path to li18n.config.json */

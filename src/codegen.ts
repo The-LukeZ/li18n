@@ -9,9 +9,7 @@
 import type { CompiledLocales, MessageNode } from "./types.ts";
 import { extractVars } from "./parser.ts";
 
-// ---------------------------------------------------------------------------
 // Public API
-// ---------------------------------------------------------------------------
 
 /** Generates the full .ts file content for `key` across all locales. */
 export function generateMessageFile(
@@ -64,9 +62,7 @@ export function generateMessageFile(
   return lines.join("\n");
 }
 
-// ---------------------------------------------------------------------------
 // Param resolution
-// ---------------------------------------------------------------------------
 
 type ParamMap = Map<string, "string" | "number" | "boolean">;
 
@@ -113,9 +109,7 @@ function buildParamType(params: ParamMap): string {
   return `{ ${entries} }`;
 }
 
-// ---------------------------------------------------------------------------
 // Code rendering
-// ---------------------------------------------------------------------------
 
 function renderNode(node: MessageNode, _params: ParamMap): string {
   if (node.kind === "string") {

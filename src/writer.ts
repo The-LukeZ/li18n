@@ -13,9 +13,7 @@ import type { CompiledLocales } from "./types.ts";
 import type { Li18nConfig } from "./schemas.ts";
 import { generateMessageFile } from "./codegen.ts";
 
-// ---------------------------------------------------------------------------
 // Public API
-// ---------------------------------------------------------------------------
 
 export async function writeOutput(locales: CompiledLocales, config: Li18nConfig): Promise<void> {
   const { outputDir, defaultLocale } = config;
@@ -57,9 +55,7 @@ export async function writeOutput(locales: CompiledLocales, config: Li18nConfig)
   await writeFile(path.join(outputDir, ".gitignore"), "*\n");
 }
 
-// ---------------------------------------------------------------------------
 // File content builders
-// ---------------------------------------------------------------------------
 
 function buildIndexFile(entries: { key: string; exportName: string; fileName: string }[]): string {
   const lines = ["// AUTO-GENERATED - do not edit", ""];
@@ -123,9 +119,7 @@ export function withLocale<T extends unknown[], R>(
 `;
 }
 
-// ---------------------------------------------------------------------------
 // Utilities
-// ---------------------------------------------------------------------------
 
 /**
  * Converts a flattened key like "nav.home" or "user.settings.title"

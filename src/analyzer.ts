@@ -20,9 +20,7 @@ export interface AnalyzeResult {
   errors: AnalyzerError[];
 }
 
-// ---------------------------------------------------------------------------
 // Public API
-// ---------------------------------------------------------------------------
 
 export function analyzeTree(raw: MessageTree, filePath: string): AnalyzeResult {
   const errors: AnalyzerError[] = [];
@@ -40,9 +38,7 @@ export function analyzeTree(raw: MessageTree, filePath: string): AnalyzeResult {
   return { tree, errors };
 }
 
-// ---------------------------------------------------------------------------
 // Internal
-// ---------------------------------------------------------------------------
 
 function analyzeNode(node: MessageNode, key: string, filePath: string): MessageNode {
   if (node.kind === "string") return node;
