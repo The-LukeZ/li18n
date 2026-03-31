@@ -44,6 +44,9 @@ export async function writeOutput(locales: CompiledLocales, config: Li18nConfig)
   // Write index.ts
   await writeFile(path.join(outputDir, "index.ts"), buildRootIndexFile());
 
+  // Write messages.ts (re-exporting all messages)
+  await writeFile(path.join(outputDir, "messages.ts"), buildMessagesFile());
+
   // Write runtime.ts (only if it doesn't already exist)
   const runtimePath = path.join(outputDir, "runtime.ts");
   const runtimeFile = Bun.file(runtimePath);
@@ -75,11 +78,18 @@ function buildIndexFile(entries: { key: string; exportName: string; fileName: st
 function buildRootIndexFile(): string {
   return [
     "// AUTO-GENERATED - do not edit",
-    `export * as m from "./messages/_index.ts";`,
     `export { getLocale, setLocale, withLocale, localeStorage, locales, baseLocale } from "./runtime.ts";`,
     `export type { Locale, MaybePromise } from "./runtime.ts";`,
     "",
   ].join("\n");
+}
+
+function buildMessagesFile(): string {
+  return `// AUTO-GENERATED - do not edit
+export * from "./messages/_index.ts";
+
+export * as m from "./messages/_index.ts";
+`;
 }
 
 function buildRuntimeFile(defaultLocale: string, allLocales: string[]): string {
