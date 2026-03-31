@@ -2,7 +2,13 @@
 
 A simple, type-safe i18n library for JavaScript/TypeScript. Define your messages in JSON, get fully-typed TypeScript functions out.
 
-**Key difference from other i18n libraries:** Full variable types (string, number, boolean), conditionals, and pluralization — all defined directly in JSON, all type-checked at compile time.
+**Key features:**
+
+- Full variable types (string, number, boolean)
+- Conditionals
+- Pluralization
+
+— all defined directly in JSON, all type-checked at compile time.
 
 ---
 

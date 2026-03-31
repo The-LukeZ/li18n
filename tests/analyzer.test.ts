@@ -1,16 +1,16 @@
 import { describe, test, expect } from "bun:test";
 import { analyzeTree } from "../src/analyzer.ts";
-import type { MessageTree } from "../src/types.ts";
+import type { MessageNode, MessageTree } from "../src/types.ts";
 
-function stringNode(vars: string[] = []) {
-  return { kind: "string" as const, vars };
+function stringNode(vars: string[] = []): Extract<MessageNode, { kind: "string" }> {
+  return { kind: "string" as const, template: "", vars };
 }
 
 function conditionalNode(
   condVar: string,
   condType: "boolean" | "string" | "number",
   cases: { key: string; value: string; vars?: string[] }[],
-) {
+): Extract<MessageNode, { kind: "conditional" }> {
   return {
     kind: "conditional" as const,
     condVar,
