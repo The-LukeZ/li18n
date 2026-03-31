@@ -285,3 +285,13 @@ setGetLocale(() => myApp.currentLocale());
 | `defaultLocale` | `string`   | Fallback locale — must be one of `locales`            |
 | `messagesDir`   | `string`   | Path to the folder containing locale JSON files       |
 | `outputDir`     | `string`   | Path where generated TypeScript files will be written |
+
+---
+
+## Backlog
+
+- Support subfolders in `messagesDir`  
+  Message keys are then joined with dots (e.g. `errors/en.json` → `errors.someKey`) OR generate named exports for subfolders (e.g. `import { m } from "./i18n/errors"`).
+- Add a CLI command to check for missing/extra keys across locales (find keys which are present in some locales but not others and then give a structured report).
+- YAML support (e.g. `en.yaml` instead of `en.json`). However that could be a separate package that uses the same core compiler, so maybe not a priority right now.
+- Support custom variable types (e.g. dates, currencies) with custom formatting options. This would require a way to define custom variable types and their corresponding TypeScript types and runtime formatting logic.
