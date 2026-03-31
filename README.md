@@ -265,15 +265,22 @@ All commands accept `--config <path>` (default: `li18n.config.json`).
 The generated `src/i18n/runtime.ts` exposes locale management:
 
 ```ts
-import { getLocale, withLocale, setGetLocale, localeStorage } from "./src/i18n";
+import { getLocale, setLocale, withLocale, localeStorage } from "./src/i18n";
 
-// Set locale for an async scope (e.g. per request in SSR)
-withLocale("de", () => {
-  m.greeting({ name: "Alice" }); // → "Hallo Alice!"
-});
+// Set a global locale (e.g. in a client-side app)
+setLocale("de");
+m.greeting({ name: "Alice" }); // → "Hallo Alice!"
 
-// Override the locale source entirely
-setGetLocale(() => myApp.currentLocale());
+// Wrap a handler so its locale is resolved per-call (e.g. per command execution in a Discord bot or per request in a server)
+const myHandler = withLocale(
+  async (req: Request) => {
+    return new Response(m.greeting({ name: "Alice" }));
+  },
+  async (req: Request) => req.headers.get("Accept-Language") ?? undefined,
+);
+
+// The wrapped handler runs each call in its own async locale scope
+await myHandler(req); // locale is resolved from each individual request
 ```
 
 ---
