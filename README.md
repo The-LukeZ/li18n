@@ -256,8 +256,14 @@ Any `{var}` references in case strings are interpolated normally. All referenced
 
 ```ts
 export function greeting(pOrLocale?: Locale): string;
-export function greeting(pOrLocale?: { isLoggedIn: boolean; name: string }, locale?: Locale): string;
-export function greeting(pOrLocale?: { isLoggedIn: boolean; name: string } | Locale, locale?: Locale): string {
+export function greeting(
+  pOrLocale?: { isLoggedIn: boolean; name: string },
+  locale?: Locale,
+): string;
+export function greeting(
+  pOrLocale?: { isLoggedIn: boolean; name: string } | Locale,
+  locale?: Locale,
+): string {
   // ...
 }
 ```
@@ -270,13 +276,13 @@ Every generated message function accepts an optional locale argument, letting yo
 
 ```ts
 // No params — locale only or nothing
-m.farewell();         // uses getLocale()
-m.farewell("de");     // forced to "de"
+m.farewell(); // uses getLocale()
+m.farewell("de"); // forced to "de"
 
 // With params — params first, locale second
-m.greeting({ name: "Alice" });         // uses getLocale()
-m.greeting({ name: "Alice" }, "de");   // forced to "de"
-m.greeting("de");                      // forced to "de", no params
+m.greeting({ name: "Alice" }); // uses getLocale()
+m.greeting({ name: "Alice" }, "de"); // forced to "de"
+m.greeting("de"); // forced to "de", no params
 ```
 
 This is useful when you need a specific locale without changing the global locale state — for example, rendering an email in the recipient's language while your server's locale is set to something else.

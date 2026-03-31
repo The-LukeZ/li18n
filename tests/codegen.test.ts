@@ -324,8 +324,12 @@ describe("generateMessageFile - locale override", () => {
     expect(output).toContain(
       "export function msg(pOrLocale?: { name: string } | Locale, locale?: Locale): string {",
     );
-    expect(output).toContain(`const p = (typeof pOrLocale === "string" ? {} : pOrLocale) as { name: string };`);
-    expect(output).toContain(`const loc = typeof pOrLocale === "string" ? pOrLocale : locale ?? getLocale();`);
+    expect(output).toContain(
+      `const p = (typeof pOrLocale === "string" ? {} : pOrLocale) as { name: string };`,
+    );
+    expect(output).toContain(
+      `const loc = typeof pOrLocale === "string" ? pOrLocale : locale ?? getLocale();`,
+    );
     expect(output).toContain("switch (loc)");
   });
 
@@ -333,7 +337,10 @@ describe("generateMessageFile - locale override", () => {
     const output = generateMessageFile(
       "msg",
       "msg",
-      locales({ en: { msg: stringNode("{name}", ["name"]) }, de: { msg: stringNode("{name}", ["name"]) } }),
+      locales({
+        en: { msg: stringNode("{name}", ["name"]) },
+        de: { msg: stringNode("{name}", ["name"]) },
+      }),
       "en",
     );
     expect(output).toContain("return _de(p)");

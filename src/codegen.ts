@@ -51,12 +51,8 @@ export function generateMessageFile(
     lines.push(
       `export function ${exportName}(pOrLocale?: ${paramType} | Locale, locale?: Locale): string {`,
     );
-    lines.push(
-      `  const p = (typeof pOrLocale === "string" ? {} : pOrLocale) as ${paramType};`,
-    );
-    lines.push(
-      `  const loc = typeof pOrLocale === "string" ? pOrLocale : locale ?? getLocale();`,
-    );
+    lines.push(`  const p = (typeof pOrLocale === "string" ? {} : pOrLocale) as ${paramType};`);
+    lines.push(`  const loc = typeof pOrLocale === "string" ? pOrLocale : locale ?? getLocale();`);
   } else {
     lines.push(`export function ${exportName}(locale?: Locale): string {`);
     lines.push(`  const loc = locale ?? getLocale();`);
