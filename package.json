@@ -7,7 +7,7 @@
   },
   "homepage": "https://github.com/The-LukeZ/li18n?tab=readme-ov-file",
   "bin": {
-    "li18n": "./bin/li18n.ts"
+    "li18n": "bin/li18n.ts"
   },
   "scripts": {
     "build": "tsdown",
