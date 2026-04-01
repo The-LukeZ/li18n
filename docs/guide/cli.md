@@ -51,7 +51,7 @@ Exits with a non-zero status code if any keys are missing or extra across locale
 
 ### `init`
 
-Create a default `li18n.config.json` in the current directory.
+Create a default `li18n.config.json` in the current directory and initialize the messages directory for your translations.
 
 ```bash
 li18n init
