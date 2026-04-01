@@ -57,13 +57,11 @@ Create a default `li18n.config.json` in the current directory and initialize the
 li18n init
 ```
 
----
+#### Params
 
-Run any command with `--help` for the full option list:
-
-```bash
-li18n build --help
-```
+| Param                   | Description                                           | Default      |
+| ----------------------- | ----------------------------------------------------- | ------------ |
+| `--messages-dir <path>` | Relative path to the messages directory to initialize | `./messages` |
 
 ## Usage in scripts
 
