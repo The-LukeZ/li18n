@@ -154,7 +154,16 @@ async function runInit(messagesDir: string): Promise<void> {
     }
     const content = exampleContent[locale] ?? JSON.stringify({ hello: "Hello!" }, null, 2);
     await Bun.write(localePath, content);
-    log.success(`Created ${localePath}`);
+    log.success(
+      [
+        `Created ${localePath}`,
+        "",
+        "If you want, you can add the following key to your message files to get type safety:",
+        "    $schema: ../node_modules/@the-lukez/li18n/messages.schema.json",
+        "",
+        "Note, that you like need to adjust the path to the schema file depending on your directory structure.",
+      ].join("\n"),
+    );
   }
 }
 
