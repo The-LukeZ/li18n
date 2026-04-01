@@ -2,10 +2,9 @@
 
 <!-- The ?<num> is added because of caching. Caching time is very long it seems. -->
 
-[![npm version](https://badgen.net/npm/v/@the-lukez/li18n?3)](https://www.npmjs.com/package/@the-lukez/li18n)
-[![License](https://badgen.net/badge/license/MIT/blue?3)](https://www.npmjs.com/package/@the-lukez/li18n)
-[![Open Issues](https://badgen.net/github/issues/The-LukeZ/li18n?3)](https://github.com/The-LukeZ/li18n/issues?q=is%3Aissue+is%3Aopen)
-[![Closed Issues](https://badgen.net/github/closed-issues/The-LukeZ/li18n?3)](https://github.com/The-LukeZ/li18n/issues?q=is%3Aissue+is%3Aclosed)
+[![License](https://badgen.net/badge/license/MIT/blue?4)](https://www.npmjs.com/package/@the-lukez/li18n)
+[![Open Issues](https://badgen.net/github/issues/The-LukeZ/li18n?4)](https://github.com/The-LukeZ/li18n/issues?q=is%3Aissue+is%3Aopen)
+[![Closed Issues](https://badgen.net/github/closed-issues/The-LukeZ/li18n?4)](https://github.com/The-LukeZ/li18n/issues?q=is%3Aissue+is%3Aclosed)
 
 A simple, type-safe i18n library for TypeScript. Define your messages in JSON, get fully-typed TypeScript functions out. No runtime parsing, no stringly-typed keys.
 
