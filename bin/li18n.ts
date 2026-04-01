@@ -15,6 +15,7 @@ import { loadConfig } from "../src/config.ts";
 import { parseLocaleFile } from "../src/parser.ts";
 import { analyzeTree } from "../src/analyzer.ts";
 import { log } from "./utils/logger.ts";
+import type { Li18nConfig } from "../src/schemas.ts";
 
 const configOption = {
   name: "--config <path>",
@@ -74,7 +75,8 @@ makeCli({
           defaultLocale: "en",
           messagesDir: "./locales",
           outputDir: "./src/i18n",
-        };
+          clean: true,
+        } satisfies Li18nConfig & { $schema?: string };
         await Bun.write(configPath, JSON.stringify(defaultConfig, null, 2));
         log.success(`Created new config file at ${configPath}`);
       },

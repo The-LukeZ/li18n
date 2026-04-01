@@ -10,6 +10,7 @@ import { z } from "zod";
 
 export const Li18nConfigSchema = z
   .object({
+    // $schema can be present, but ignored here
     locales: z.array(z.string()).min(1),
     defaultLocale: z.string(),
     messagesDir: z.string(),
@@ -27,7 +28,7 @@ export const Li18nConfigSchema = z
     }
   });
 
-export type Li18nConfig = z.infer<typeof Li18nConfigSchema>;
+export type Li18nConfig = z.input<typeof Li18nConfigSchema>;
 
 // Message JSON schemas  (messages/<locale>.json)
 
