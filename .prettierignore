@@ -4,6 +4,7 @@ CLAUDE.md
 dist/
 tests/fixture/generated/
 li18n.schema.json
+messages.schema.json
 
 docs/node_modules/
 docs/.vitepress/dist/
