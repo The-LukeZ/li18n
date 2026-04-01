@@ -4,7 +4,7 @@
  */
 import { describe, test, expect, afterAll } from "bun:test";
 import path from "node:path";
-import { rmSync, existsSync, mkdtempSync } from "node:fs";
+import { rmSync, existsSync, mkdtempSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { compile } from "../src/index.ts";
 
@@ -103,16 +103,28 @@ describe("compile() - full pipeline", () => {
     expect(content).toContain("p.count");
   });
 
-  test("does not overwrite existing runtime.ts on second compile", async () => {
+  test("overwrites runtime.ts when content has changed", async () => {
     await compile({ configPath: CONFIG_PATH, outputDir: OUTPUT_DIR });
-    // Overwrite runtime with a sentinel value
     const runtimePath = path.join(OUTPUT_DIR, "runtime.ts");
     await Bun.write(runtimePath, "// sentinel");
 
-    // Second compile
     await compile({ configPath: CONFIG_PATH, outputDir: OUTPUT_DIR });
 
     const content = await Bun.file(runtimePath).text();
-    expect(content).toBe("// sentinel");
+    expect(content).not.toBe("// sentinel");
+    expect(content).toContain("getLocale");
+  });
+
+  test("does not overwrite runtime.ts when content is unchanged", async () => {
+    await compile({ configPath: CONFIG_PATH, outputDir: OUTPUT_DIR });
+    const runtimePath = path.join(OUTPUT_DIR, "runtime.ts");
+    const mtimeBefore = statSync(runtimePath).mtimeMs;
+
+    // Small delay so a write would produce a different mtime
+    await Bun.sleep(10);
+    await compile({ configPath: CONFIG_PATH, outputDir: OUTPUT_DIR });
+
+    const mtimeAfter = statSync(runtimePath).mtimeMs;
+    expect(mtimeAfter).toBe(mtimeBefore);
   });
 });

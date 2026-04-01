@@ -68,7 +68,7 @@ export async function compile(options: CompileOptions): Promise<CompileResult> {
   }
 
   if (Object.keys(compiledLocales).length > 0) {
-    const shouldClean = options.clean ?? config.clean;
+    const shouldClean = options.clean ?? config.clean ?? true;
     await writeOutput(compiledLocales, config, shouldClean);
   }
 

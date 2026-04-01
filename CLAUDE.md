@@ -55,7 +55,7 @@ On npm the package is named `@the-lukez/li18n` (not just `li18n`) to avoid confl
 - `src/parser.ts` exports `parseLocaleFile(jsonText, filePath)` — Zod-validates structure, then builds a flat `MessageTree`. Also exports `extractVars(template)`.
 - `src/analyzer.ts` infers/validates `condType` and collects variables — runs after the parser. Exports `analyzeTree(raw, filePath): AnalyzeResult`.
 - `src/codegen.ts` exports `generateMessageFile(key, exportName, locales, defaultLocale)` — generates `.ts` source per message key.
-- `src/writer.ts` writes all output files; exports `keyToExportName(key)` (dot-keys → camelCase). `runtime.ts` is written once and never overwritten.
+- `src/writer.ts` writes all output files; exports `keyToExportName(key)` (dot-keys → camelCase). `runtime.ts` is only overwritten if its content has changed.
 - `src/index.ts` exports `compile(options: CompileOptions): Promise<CompileResult>` — orchestrates the full pipeline.
 - CLI entry: `bin/li18n.ts` — commands: `build`, `watch`, `check`, `init`.
 - CLI is built with **`make-cli`** (`import makeCli from "make-cli"`). Commands are declared via `makeCli({ name, commands: [...] })` — each command has `name`, `description`, `options[]`, and an async `handler`.
@@ -78,7 +78,7 @@ On npm the package is named `@the-lukez/li18n` (not just `li18n`) to avoid confl
 - `messages/<key>.ts` — one per key; imports `getLocale` and `type Locale` from runtime, has private per-locale functions, and an exported dispatch function. No-params messages export `function name(locale?: Locale): string`; messages with params export two overloads (`(pOrLocale?: Locale)` and `(pOrLocale?: ParamType, locale?: Locale)`) plus an implementation that extracts `p` and `loc` before the `switch`.
 - `messages/_index.ts` — re-exports all message functions.
 - `index.ts` — root re-export of messages and runtime functions.
-- `runtime.ts` — written **only if it doesn't exist**. Contains: `Locale` union type, `MaybePromise<T>`, `locales`, `baseLocale`, `localeStorage` (AsyncLocalStorage), `setLocale`, `getLocale`, and `withLocale`.
+- `runtime.ts` — overwritten only if content has changed. Contains: `Locale` union type, `MaybePromise<T>`, `locales`, `baseLocale`, `localeStorage` (AsyncLocalStorage), `setLocale`, `getLocale`, and `withLocale`.
 - `.gitignore` — marks the output dir as auto-generated.
 
 ### Runtime API

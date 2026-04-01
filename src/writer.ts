@@ -5,10 +5,11 @@
  *   - Write one messages/<exportName>.ts per message key
  *   - Write messages/_index.ts (re-exports all keys)
  *   - Write index.ts (re-exports messages + runtime)
- *   - Write runtime.ts once (never overwritten if it already exists)
+ *   - Write runtime.ts only if content has changed (avoids unnecessary writes)
  */
 
 import path from "node:path";
+import { createHash } from "node:crypto";
 import type { CompiledLocales } from "./types.ts";
 import type { Li18nConfig } from "./schemas.ts";
 import { generateMessageFile } from "./codegen.ts";
@@ -52,11 +53,14 @@ export async function writeOutput(
   // Write index.ts
   await writeFile(path.join(outputDir, "index.ts"), buildRootIndexFile());
 
-  // Write runtime.ts (only if it doesn't already exist)
+  // Write runtime.ts only if content has changed
   const runtimePath = path.join(outputDir, "runtime.ts");
-  const runtimeFile = Bun.file(runtimePath);
-  if (!(await runtimeFile.exists())) {
-    await writeFile(runtimePath, buildRuntimeFile(defaultLocale, config.locales));
+  const newRuntime = buildRuntimeFile(defaultLocale, config.locales);
+  const existingRuntime = await Bun.file(runtimePath)
+    .text()
+    .catch(() => null);
+  if (existingRuntime === null || hash(existingRuntime) !== hash(newRuntime)) {
+    await writeFile(runtimePath, newRuntime);
   }
 
   // Write .gitignore to exclude all generated files from version control
@@ -140,6 +144,10 @@ export function keyToExportName(key: string): string {
 
 function capitalize(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function hash(content: string): string {
+  return createHash("sha256").update(content).digest("hex");
 }
 
 async function writeFile(filePath: string, content: string): Promise<void> {

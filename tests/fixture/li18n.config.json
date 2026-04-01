@@ -1,6 +1,6 @@
 {
   "$schema": "../../li18n.schema.json",
-  "locales": ["en", "de"],
+  "locales": ["en", "de", "fr"],
   "defaultLocale": "en",
   "messagesDir": "messages",
   "outputDir": "generated",
