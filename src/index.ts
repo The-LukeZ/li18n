@@ -58,6 +58,7 @@ export async function compile(options: CompileOptions): Promise<CompileResult> {
 
     const jsonText = await file.text();
     const rawTree = parseLocaleFile(jsonText, filePath);
+    delete rawTree["$schema"]; // remove $schema before analysis since it's not part of the message tree
     const { tree, errors } = analyzeTree(rawTree, filePath);
 
     for (const e of errors) {
