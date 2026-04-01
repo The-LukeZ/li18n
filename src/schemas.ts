@@ -43,12 +43,10 @@ const VarFieldSchema = z.union([
 export type RawVarField = z.infer<typeof VarFieldSchema>;
 
 /** The single element inside a conditional array. */
-const ConditionalElementSchema = z
-  .object({
-    var: VarFieldSchema,
-    cases: z.record(z.string(), z.string()),
-  })
-  .strict();
+const ConditionalElementSchema = z.strictObject({
+  var: VarFieldSchema,
+  cases: z.record(z.string(), z.string()),
+});
 
 export type RawConditionalElement = z.infer<typeof ConditionalElementSchema>;
 

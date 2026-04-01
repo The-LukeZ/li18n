@@ -6,11 +6,8 @@
     "url": "git+https://github.com/The-LukeZ/li18n.git"
   },
   "homepage": "https://github.com/The-LukeZ/li18n?tab=readme-ov-file",
-  "bin": {
-    "li18n": "dist/bin/li18n.mjs"
-  },
   "scripts": {
-    "build": "tsdown && bun scripts/generate-schema.ts",
+    "build": "bun scripts/generate-schema.ts && tsdown",
     "dev": "bun run bin/li18n.ts",
     "format:check": "prettier --check .",
     "format": "prettier --write .",
@@ -39,10 +36,14 @@
   "engines": {
     "node": ">=22"
   },
+  "bin": {
+    "li18n": "dist/bin/li18n.mjs"
+  },
   "exports": {
     ".": "./dist/index.mjs",
+    "./package.json": "./package.json",
     "./li18n.schema.json": "./li18n.schema.json",
-    "./*": "./*"
+    "./messages.schema.json": "./messages.schema.json"
   },
   "files": [
     "dist",

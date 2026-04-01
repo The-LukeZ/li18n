@@ -5,8 +5,10 @@ export default defineConfig([
     entry: "src/index.ts",
     platform: "node",
     exports: {
-      packageJson: true,
-      all: true,
+      customExports: {
+        "./li18n.schema.json": "./li18n.schema.json",
+        "./messages.schema.json": "./messages.schema.json",
+      },
     },
     tsconfig: "./tsconfig.json",
     dts: true,
