@@ -3,6 +3,24 @@ import { defineConfig } from "vitepress";
 export default defineConfig({
   title: "li18n",
   description: "Simple, type-safe i18n for TypeScript",
+  appearance: "dark",
+  lang: "en",
+  head: [
+    ["og:title", { content: "li18n - Simple, type-safe i18n for TypeScript" }],
+    [
+      "og:description",
+      {
+        content:
+          "Define your messages in JSON, get fully-typed TypeScript functions out. No runtime parsing, no stringly-typed keys.",
+      },
+    ],
+    [
+      "og:image",
+      {
+        content: "https://raw.githubusercontent.com/The-LukeZ/li18n/main/docs/.vitepress/og-image.png",
+      },
+    ]
+  ],
 
   themeConfig: {
     nav: [

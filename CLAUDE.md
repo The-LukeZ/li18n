@@ -89,7 +89,7 @@ On npm the package is named `@the-lukez/li18n` (not just `li18n`) to avoid confl
 
 ### Testing
 
-Tests live in `tests/`. Run with `bun test` (the `test` script also runs a fixture compile first).
+Tests live in `tests/`. Run with `bun run test` (NOT just `bun test` as the script also generates important code; the `test` script also runs a fixture compile first).
 
 | File | Covers |
 |------|--------|
