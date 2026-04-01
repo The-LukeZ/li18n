@@ -3,27 +3,7 @@
 The generated `runtime.ts` (in your `outputDir`) exposes locale management utilities. It is re-exported from the root `index.ts` alongside all message functions.
 
 ```ts
-import { m, getLocale, setLocale, withLocale } from "./src/i18n";
-```
-
-## `setLocale(locale)`
-
-Sets a global locale variable. Suitable for client-side apps where locale doesn't change per-request.
-
-```ts
-setLocale("de");
-m.greeting({ name: "Alice" }); // "Hallo Alice!"
-
-setLocale("en");
-m.greeting({ name: "Alice" }); // "Hello Alice!"
-```
-
-## `getLocale()`
-
-Returns the currently active locale. Prefers the `AsyncLocalStorage` scope (set by `withLocale`) over the global variable.
-
-```ts
-const locale = getLocale(); // e.g. "en"
+import { m, getLocale, overwriteGetLocale, withLocale } from "./src/i18n";
 ```
 
 ## `withLocale(handler, getLocaleFromHandler)`
@@ -46,7 +26,7 @@ await myHandler(req); // locale isolated per call
 
 ### Use cases
 
-**HTTP server** — resolve locale from `Accept-Language`:
+**HTTP server** - resolve locale from `Accept-Language`:
 
 ```ts
 const handleRequest = withLocale(
@@ -55,7 +35,7 @@ const handleRequest = withLocale(
 );
 ```
 
-**Discord bot** — resolve locale from interaction data:
+**Discord bot** - resolve locale from interaction data:
 
 ```ts
 const handleCommand = withLocale(
@@ -64,6 +44,48 @@ const handleCommand = withLocale(
   },
   (interaction) => interaction.locale,
 );
+```
+
+## `overwriteGetLocale(fn)`
+
+Replaces the locale resolver for the **current `withLocale` context only**. After calling this, every subsequent `getLocale()` call within the same handler invocation uses `fn` instead of the locale that was initially resolved.
+
+`fn` must be synchronous and return a `Locale`.
+
+```ts
+const handleRequest = withLocale(
+  async (req: Request) => {
+    // Override the locale based on a user preference stored in a cookie
+    const user = await getUser(req);
+    overwriteGetLocale(() => user.preferredLocale);
+
+    return new Response(m.greeting({ name: user.name }));
+  },
+  (req) => req.headers.get("Accept-Language")?.split(",")[0],
+);
+```
+
+The override is fully isolated - concurrent handler calls are unaffected:
+
+```ts
+const handler = withLocale(
+  async (req: Request) => {
+    overwriteGetLocale(() => resolveLocaleFromSession(req));
+    await someAsyncWork();
+    return m.greeting(); // still uses the overridden locale for *this* request
+  },
+  () => "en",
+);
+```
+
+Calling `overwriteGetLocale` outside of a `withLocale` context is a no-op.
+
+## `getLocale()`
+
+Returns the currently active locale for the current `withLocale` context. Falls back to `baseLocale` when called outside a context.
+
+```ts
+const locale = getLocale(); // e.g. "en"
 ```
 
 ## `locales`
@@ -82,12 +104,4 @@ The default locale string, as set by `defaultLocale` in `li18n.config.json`.
 ```ts
 import { baseLocale } from "./src/i18n";
 // e.g. "en"
-```
-
-## `localeStorage`
-
-The underlying `AsyncLocalStorage<Locale>` instance. Exposed for advanced use cases where you need direct access.
-
-```ts
-import { localeStorage } from "./src/i18n";
 ```

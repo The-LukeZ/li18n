@@ -35,7 +35,7 @@ li18n watch
 
 ### `check`
 
-Validate that all locales have the same keys — no output files are written.
+Validate that all locales have the same keys - no output files are written.
 
 ```bash
 li18n check

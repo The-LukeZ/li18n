@@ -58,12 +58,22 @@ li18n build
 ```
 
 ```ts
-import { m, setLocale } from "./src/i18n";
+import { m, withLocale } from "./src/i18n";
 
-setLocale("de");
-m.greeting({ name: "Alice" }); // → "Hallo Alice!"
-m.itemCount({ count: 1 }); // → "1 Element"
-m.itemCount({ count: 5 }); // → "5 Elemente"
+const handler = withLocale(
+  async (interaction) => {
+    interaction.reply(m.greeting({ name: interaction.user.username }));
+  },
+  (interaction) => interaction.locale,
+);
+```
+
+Or pass the locale directly to any message function:
+
+```ts
+m.greeting({ name: "Alice" }, "de"); // → "Hallo Alice!"
+m.itemCount({ count: 1 }, "de"); // → "1 Element"
+m.itemCount({ count: 5 }, "de"); // → "5 Elemente"
 ```
 
 See the [docs](https://li18n.thelukez.com) for the full message format, CLI reference, and runtime API.

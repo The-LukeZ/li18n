@@ -38,6 +38,7 @@ describe("compile() - full pipeline", () => {
     const content = await indexFile.text();
     expect(content).toContain("export * as m from");
     expect(content).toContain("getLocale");
+    expect(content).toContain("overwriteGetLocale");
   });
 
   test("writes runtime.ts to outputDir", async () => {
@@ -46,8 +47,10 @@ describe("compile() - full pipeline", () => {
     expect(await runtimeFile.exists()).toBe(true);
     const content = await runtimeFile.text();
     expect(content).toContain("getLocale");
+    expect(content).toContain("overwriteGetLocale");
     expect(content).toContain("withLocale");
     expect(content).toContain("AsyncLocalStorage");
+    expect(content).not.toContain("setLocale");
     // Default locale hardcoded
     expect(content).toContain('"en"');
   });

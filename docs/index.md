@@ -15,9 +15,23 @@ hero:
 
 features:
   - title: Fully Typed
-    details: Every message key becomes a typed TypeScript function. Variables and conditionals are reflected in the function signature — caught at compile time, not runtime.
+    details: Every message key becomes a typed TypeScript function. Variables and conditionals are reflected in the function signature - caught at compile time, not runtime.
   - title: Conditionals & Pluralization
     details: Boolean, string, and number conditionals with case-based dispatch. Number cases support JS comparison operators for pluralization.
   - title: Async-Safe Locale Scoping
-    details: Built-in AsyncLocalStorage support via withLocale() — isolate locale per-request in servers and Discord bots without global state collisions.
+    details: Built-in AsyncLocalStorage support via withLocale() - isolate locale per-request in servers and Discord bots without global state collisions.
 ---
+
+<!--
+GitHub-flavored Alerts:
+
+> [!NOTE]
+
+> [!TIP]
+
+> [!IMPORTANT]
+
+> [!WARNING]
+
+> [!CAUTION]
+-->

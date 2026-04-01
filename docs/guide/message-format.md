@@ -1,6 +1,6 @@
 # Message Format
 
-Messages are defined as JSON files — one file per locale. li18n supports simple strings, interpolated variables, and conditional branches.
+Messages are defined as JSON files - one file per locale. li18n supports simple strings, interpolated variables, and conditional branches.
 
 ## Simple strings
 
@@ -172,14 +172,14 @@ export function greeting(
 Every generated message function accepts an optional locale argument:
 
 ```ts
-// No params — locale only or nothing
+// No params - locale only or nothing
 m.farewell(); // uses getLocale()
 m.farewell("de"); // forced to "de"
 
-// With params — params first, locale second
+// With params - params first, locale second
 m.greeting({ name: "Alice" }); // uses getLocale()
 m.greeting({ name: "Alice" }, "de"); // forced to "de"
 m.greeting("de"); // forced to "de", no params
 ```
 
-This is useful when rendering content in a specific locale (e.g. sending emails in the recipient's language) without changing global locale state.
+This is useful when rendering content in a specific locale (e.g. sending emails in the recipient's language) without affecting the current context locale.

@@ -76,4 +76,8 @@ export default defineConfig({
       light: "github-light",
     },
   },
+
+  sitemap: {
+    hostname: "https://li18n.thelukez.com",
+  },
 });

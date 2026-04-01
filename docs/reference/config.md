@@ -19,10 +19,10 @@ li18n is configured via `li18n.config.json` in your project root.
 
 | Field           | Type       | Required | Default | Description                                                                                                  |
 | --------------- | ---------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------ |
-| `locales`       | `string[]` | Yes      | —       | Supported locale codes (e.g. ISO 639-1: `"en"`, `"de"`, `"fr"`)                                              |
-| `defaultLocale` | `string`   | Yes      | —       | Fallback locale — must be one of the values in `locales`                                                     |
-| `messagesDir`   | `string`   | Yes      | —       | Path to the folder containing locale JSON files (one file per locale)                                        |
-| `outputDir`     | `string`   | Yes      | —       | Path where generated TypeScript files will be written                                                        |
+| `locales`       | `string[]` | Yes      | -       | Supported locale codes (e.g. ISO 639-1: `"en"`, `"de"`, `"fr"`)                                              |
+| `defaultLocale` | `string`   | Yes      | -       | Fallback locale - must be one of the values in `locales`                                                     |
+| `messagesDir`   | `string`   | Yes      | -       | Path to the folder containing locale JSON files (one file per locale)                                        |
+| `outputDir`     | `string`   | Yes      | -       | Path where generated TypeScript files will be written                                                        |
 | `clean`         | `boolean`  | No       | `true`  | Delete the `messages/` subdirectory inside `outputDir` before each build to remove stale generated key files |
 
 ## Schema validation

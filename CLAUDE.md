@@ -78,13 +78,13 @@ On npm the package is named `@the-lukez/li18n` (not just `li18n`) to avoid confl
 - `messages/<key>.ts` — one per key; imports `getLocale` and `type Locale` from runtime, has private per-locale functions, and an exported dispatch function. No-params messages export `function name(locale?: Locale): string`; messages with params export two overloads (`(pOrLocale?: Locale)` and `(pOrLocale?: ParamType, locale?: Locale)`) plus an implementation that extracts `p` and `loc` before the `switch`.
 - `messages/_index.ts` — re-exports all message functions.
 - `index.ts` — root re-export of messages and runtime functions.
-- `runtime.ts` — overwritten only if content has changed. Contains: `Locale` union type, `MaybePromise<T>`, `locales`, `baseLocale`, `localeStorage` (AsyncLocalStorage), `setLocale`, `getLocale`, and `withLocale`.
+- `runtime.ts` — overwritten only if content has changed. Contains: `Locale` union type, `MaybePromise<T>`, `locales`, `baseLocale`, `getLocale`, `overwriteGetLocale`, and `withLocale`. `localeStorage` is an internal implementation detail and is not exported.
 - `.gitignore` — marks the output dir as auto-generated.
 
 ### Runtime API
 
-- **`setLocale(locale)`** — sets a global `_locale` variable.
-- **`getLocale()`** — returns `localeStorage.getStore() ?? _locale` (async context takes priority).
+- **`getLocale()`** — returns the locale for the current `withLocale` context. Falls back to `baseLocale` when called outside a context.
+- **`overwriteGetLocale(fn: () => Locale)`** — replaces the locale resolver for the current `withLocale` context only. `fn` is called synchronously on every subsequent `getLocale()` call within that context. No-op outside a context.
 - **`withLocale(handler, getLocaleFromHandler)`** — wraps a handler to run in an isolated `AsyncLocalStorage` scope; `getLocaleFromHandler(args)` resolves the locale per-call (can be `MaybePromise<Locale>`). Always returns a `Promise`.
 
 ### Testing

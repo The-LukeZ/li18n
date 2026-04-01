@@ -85,15 +85,29 @@ This generates typed TypeScript files in `outputDir`.
 
 ### 4. Import and use
 
-```ts
-import { m, setLocale } from "./src/i18n";
+> [!IMPORTANT]
+> li18n is not designed for webservers with per-request state - while it may work, it is not supported officially - please make open issues on GitHub if you got it working.
+>
+> If you want localization for express, hono or similar, use another library. Instead, li18n is ideal for functional programming styles - like Discord bots -
+> where you can pass the locale explicitly or use `withLocale()` to scope it.
 
-setLocale("de");
-m.greeting({ name: "Alice" }); // "Hallo Alice!"
+```ts
+import { m, withLocale } from "./src/i18n";
+
+const handler = withLocale(
+  async (req: Request) => m.greeting({ name: "Alice" }),
+  (req) => req.headers.get("Accept-Language")?.split(",")[0],
+);
+```
+
+Or pass the locale directly to any message function:
+
+```ts
+m.greeting({ name: "Alice" }, "de"); // "Hallo Alice!"
 ```
 
 ## Next steps
 
-- Learn about the full [Message Format](/guide/message-format) — conditionals and pluralization
+- Learn about the full [Message Format](/guide/message-format) - conditionals and pluralization
 - See all available [CLI commands](/guide/cli)
 - Explore the [Runtime API](/guide/runtime-api) for locale management

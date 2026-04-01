@@ -86,7 +86,7 @@ function buildRootIndexFile(): string {
   return [
     "// AUTO-GENERATED - do not edit",
     `export * as m from "./messages/_index.ts";`,
-    `export { getLocale, setLocale, withLocale, localeStorage, locales, baseLocale } from "./runtime.ts";`,
+    `export { getLocale, overwriteGetLocale, withLocale, locales, baseLocale } from "./runtime.ts";`,
     `export type { Locale, MaybePromise } from "./runtime.ts";`,
     "",
   ].join("\n");
@@ -101,19 +101,22 @@ import { AsyncLocalStorage } from "node:async_hooks";
 export type Locale = ${localeUnion};
 export type MaybePromise<T> = T | Promise<T>;
 
-export const locales: Locale[] = ${localesArray} as const;
-export const baseLocale: Locale = ${JSON.stringify(defaultLocale)} as const;
+export const locales = ${localesArray} as const satisfies Locale[];
+export const baseLocale = ${JSON.stringify(defaultLocale)} as const satisfies Locale;
 
-export const localeStorage = new AsyncLocalStorage<Locale>();
+type LocaleContext = { locale: Locale; getterFn?: () => Locale };
 
-let _locale: Locale = baseLocale;
-
-export function setLocale(locale: Locale): void {
-  _locale = locale;
-}
+const localeStorage = new AsyncLocalStorage<LocaleContext>();
 
 export function getLocale(): Locale {
-  return localeStorage.getStore() ?? _locale;
+  const ctx = localeStorage.getStore();
+  if (!ctx) return baseLocale;
+  return ctx.getterFn?.() ?? ctx.locale;
+}
+
+export function overwriteGetLocale(fn: () => Locale): void {
+  const ctx = localeStorage.getStore();
+  if (ctx) ctx.getterFn = fn;
 }
 
 export function withLocale<T extends unknown[], R>(
@@ -123,7 +126,8 @@ export function withLocale<T extends unknown[], R>(
   return async (...args: T) => {
     const locale = await getLocaleFromHandler(...args);
     const validLocale = locale && locales.includes(locale) ? locale : baseLocale;
-    return localeStorage.run(validLocale, () => handler(...args));
+    const ctx: LocaleContext = { locale: validLocale };
+    return localeStorage.run(ctx, () => handler(...args));
   };
 }
 `;
