@@ -1,6 +1,6 @@
 {
   "name": "@the-lukez/li18n",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "type": "module",
   "repository": {
     "url": "git+https://github.com/The-LukeZ/li18n.git"
@@ -48,6 +48,7 @@
   "files": [
     "dist",
     "li18n.schema.json",
+    "messages.schema.json",
     "README.md",
     "LICENSE",
     "package.json",
