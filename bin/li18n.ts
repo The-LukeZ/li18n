@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+
 /**
  * bin/li18n - CLI entry point.
  *
@@ -9,6 +10,7 @@
  */
 
 import path from "node:path";
+import { mkdir } from "node:fs/promises";
 import makeCli from "make-cli";
 import { compile } from "../src/index.ts";
 import { loadConfig } from "../src/config.ts";
@@ -40,8 +42,8 @@ makeCli({
       name: "build",
       description: "Compile once",
       options: [configOption, cleanOption],
-      handler: async (options: { config: string; "no-clean": boolean }) => {
-        await runBuild(resolveConfig(options.config), options["no-clean"] ?? false);
+      handler: async (options: { config: string; noClean: boolean }) => {
+        await runBuild(resolveConfig(options.config), options.noClean ?? false);
       },
     },
     {
@@ -63,22 +65,15 @@ makeCli({
     {
       name: "init",
       description: "Initialize a new li18n config file in the current directory",
-      handler: async () => {
-        const configPath = path.resolve("li18n.config.json");
-        if (await Bun.file(configPath).exists()) {
-          log.error(`"li18n.config.json" already exists in this directory.`);
-          process.exit(1);
-        }
-        const defaultConfig = {
-          $schema: "./node_modules/@the-lukez/li18n/li18n.schema.json",
-          locales: ["en", "de"],
-          defaultLocale: "en",
-          messagesDir: "./locales",
-          outputDir: "./src/i18n",
-          clean: true,
-        } satisfies Li18nConfig & { $schema?: string };
-        await Bun.write(configPath, JSON.stringify(defaultConfig, null, 2));
-        log.success(`Created new config file at ${configPath}`);
+      options: [
+        {
+          name: "--messages-dir <path>",
+          description: "Directory to create for locale message files",
+          defaultValue: "./messages",
+        },
+      ],
+      handler: async (options: { messagesDir: string }) => {
+        await runInit(options.messagesDir);
       },
     },
   ],
@@ -122,6 +117,45 @@ async function runWatch(configPath: string): Promise<void> {
       }
     }
   });
+}
+
+async function runInit(messagesDir: string): Promise<void> {
+  const configPath = path.resolve("li18n.config.json");
+  if (await Bun.file(configPath).exists()) {
+    log.error(`"li18n.config.json" already exists in this directory.`);
+    process.exit(1);
+  }
+
+  const messagesDirAbsolute = path.resolve(messagesDir);
+  await mkdir(messagesDirAbsolute, { recursive: true });
+
+  const defaultConfig = {
+    $schema: "./node_modules/@the-lukez/li18n/li18n.schema.json",
+    locales: ["en", "de"],
+    defaultLocale: "en",
+    messagesDir: messagesDir,
+    outputDir: "./src/i18n",
+    clean: true,
+  } satisfies Li18nConfig & { $schema?: string };
+
+  await Bun.write(configPath, JSON.stringify(defaultConfig, null, 2));
+  log.success(`Created new config file at ${configPath}`);
+
+  const exampleContent: Record<string, string> = {
+    en: JSON.stringify({ hello: "Hello!" }, null, 2),
+    de: JSON.stringify({ hello: "Hallo!" }, null, 2),
+  };
+
+  for (const locale of defaultConfig.locales) {
+    const localePath = path.join(messagesDirAbsolute, `${locale}.json`);
+    if (await Bun.file(localePath).exists()) {
+      log.error(`Skipped ${localePath} (already exists)`);
+      continue;
+    }
+    const content = exampleContent[locale] ?? JSON.stringify({ hello: "Hello!" }, null, 2);
+    await Bun.write(localePath, content);
+    log.success(`Created ${localePath}`);
+  }
 }
 
 async function runCheck(configPath: string): Promise<void> {
