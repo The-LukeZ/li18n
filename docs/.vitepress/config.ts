@@ -14,12 +14,6 @@ export default defineConfig({
           "Define your messages in JSON, get fully-typed TypeScript functions out. No runtime parsing, no stringly-typed keys.",
       },
     ],
-    [
-      "og:image",
-      {
-        content: "https://raw.githubusercontent.com/The-LukeZ/li18n/main/docs/.vitepress/og-image.png",
-      },
-    ]
   ],
 
   themeConfig: {
