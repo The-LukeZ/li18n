@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../messages.schema.json",
   "greeting": "Bonjour {name}!",
   "farewell": "Au revoir",
   "nav": {
