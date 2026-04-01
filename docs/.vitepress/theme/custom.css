@@ -1,0 +1,5 @@
+/* Adjust the maximum width of the main content container */
+.main-container {
+  max-width: 100px; /* set your preferred width */
+  padding: 10px; /* adjust padding as needed */
+}

@@ -15,7 +15,10 @@
     "format:check": "prettier --check .",
     "format": "prettier --write .",
     "test": "bun bin/li18n.ts build --config tests/fixture/li18n.config.json && bun test",
-    "pack": "bun pm pack"
+    "pack": "bun pm pack",
+    "docs:dev": "cd docs && bun run dev",
+    "docs:build": "cd docs && bun run build",
+    "docs:preview": "cd docs && bun run preview"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -29,6 +32,9 @@
     "make-cli": "^6.0.2",
     "zod": "^4.3.6"
   },
+  "workspaces": [
+    "docs"
+  ],
   "license": "MIT",
   "engines": {
     "node": ">=22"

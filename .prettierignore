@@ -4,3 +4,7 @@ CLAUDE.md
 dist/
 tests/fixture/generated/
 li18n.schema.json
+
+docs/node_modules/
+docs/.vitepress/dist/
+docs/bun.lock
