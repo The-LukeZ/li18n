@@ -42,12 +42,26 @@ export default defineConfig({
 
     socialLinks: [{ icon: "github", link: "https://github.com/The-LukeZ/li18n" }],
 
+    search: {
+      provider: "local",
+    },
+
     footer: {
       message: "Released under the MIT License.",
     },
 
     editLink: {
       pattern: "https://github.com/The-LukeZ/li18n/edit/main/docs/:path",
+    },
+  },
+
+  markdown: {
+    toc: {
+      level: [2, 3],
+    },
+    theme: {
+      dark: "github-dark",
+      light: "github-light",
     },
   },
 });
