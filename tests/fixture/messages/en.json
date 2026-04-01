@@ -18,16 +18,5 @@
       "var": "locale",
       "cases": { "en": "English", "de": "German", "else": "Other" }
     }
-  ],
-  "asd": {
-    "asd": [
-      {
-        "var": { "bool": "isTrue" },
-        "cases": {
-          "true": "It is true",
-          "false": "It is false"
-        }
-      }
-    ]
-  }
+  ]
 }
