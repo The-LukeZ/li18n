@@ -65,7 +65,9 @@ describe("extractTypedVars", () => {
   });
 
   test("deduplicates by name, keeping first occurrence", () => {
-    expect(extractTypedVars("{count:num} and {count}")).toEqual([{ name: "count", type: "number" }]);
+    expect(extractTypedVars("{count:num} and {count}")).toEqual([
+      { name: "count", type: "number" },
+    ]);
   });
 });
 
@@ -88,11 +90,18 @@ describe("parseLocaleFile", () => {
 
   test("parses a string message and extracts vars", () => {
     const tree = parseLocaleFile(JSON.stringify({ msg: "Hi {name}" }), "en.json");
-    expect(tree["msg"]).toEqual({ kind: "string", template: "Hi {name}", vars: [{ name: "name", type: "string" }] });
+    expect(tree["msg"]).toEqual({
+      kind: "string",
+      template: "Hi {name}",
+      vars: [{ name: "name", type: "string" }],
+    });
   });
 
   test("parses typed vars from string message", () => {
-    const tree = parseLocaleFile(JSON.stringify({ msg: "You have {count:num} items, {isSet:bool}" }), "en.json");
+    const tree = parseLocaleFile(
+      JSON.stringify({ msg: "You have {count:num} items, {isSet:bool}" }),
+      "en.json",
+    );
     const node = tree["msg"]!;
     expect(node.kind).toBe("string");
     if (node.kind === "string") {

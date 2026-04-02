@@ -75,7 +75,14 @@ describe("generateMessageFile - string nodes", () => {
     const output = generateMessageFile(
       "msg",
       "msg",
-      locales({ en: { msg: stringNode("{name} {count}", [{ name: "name", type: "string" }, { name: "count", type: "string" }]) } }),
+      locales({
+        en: {
+          msg: stringNode("{name} {count}", [
+            { name: "name", type: "string" },
+            { name: "count", type: "string" },
+          ]),
+        },
+      }),
       "en",
     );
     expect(output).toContain("name: string");

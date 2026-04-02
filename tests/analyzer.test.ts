@@ -2,7 +2,9 @@ import { describe, test, expect } from "bun:test";
 import { analyzeTree } from "../src/analyzer.ts";
 import type { MessageNode, MessageTree, VarType } from "../src/types.ts";
 
-function stringNode(vars: { name: string; type: VarType }[] = []): Extract<MessageNode, { kind: "string" }> {
+function stringNode(
+  vars: { name: string; type: VarType }[] = [],
+): Extract<MessageNode, { kind: "string" }> {
   return { kind: "string" as const, template: "", vars };
 }
 
@@ -28,10 +30,20 @@ describe("analyzeTree - string nodes", () => {
   });
 
   test("passes string node with vars through unchanged", () => {
-    const tree: MessageTree = { msg: stringNode([{ name: "name", type: "string" }, { name: "count", type: "string" }]) };
+    const tree: MessageTree = {
+      msg: stringNode([
+        { name: "name", type: "string" },
+        { name: "count", type: "string" },
+      ]),
+    };
     const { tree: result, errors } = analyzeTree(tree, "en.json");
     expect(errors).toHaveLength(0);
-    expect(result["msg"]).toEqual(stringNode([{ name: "name", type: "string" }, { name: "count", type: "string" }]));
+    expect(result["msg"]).toEqual(
+      stringNode([
+        { name: "name", type: "string" },
+        { name: "count", type: "string" },
+      ]),
+    );
   });
 });
 
