@@ -75,8 +75,8 @@ export type RawLocaleJson = z.infer<typeof MessageJsonSchema>;
  * Converts a ZodError into a human-readable string prefixed with the file path.
  *
  * Example output:
- *   li18n.config.json → defaultLocale: "defaultLocale" ("xx") must be one of the declared locales
- *   messages/en.json → greeting[0].cases: Expected string, received number
+ *   - li18n.config.json → defaultLocale: "defaultLocale" ("xx") must be one of the declared locales
+ *   - messages/en.json → greeting[0].cases: Expected string, received number
  */
 export function formatZodError(err: z.ZodError, filePath: string): string {
   return err.issues

@@ -1,11 +1,11 @@
 import { describe, test, expect } from "bun:test";
 import { generateMessageFile } from "../src/codegen.ts";
-import type { CompiledLocales } from "../src/types.ts";
+import type { CompiledLocales, VarType } from "../src/types.ts";
 
 /**
  * Helper functions to construct message nodes for testing. These mirror the internal structure of the AST used by codegen, but with a more convenient API for test cases.
  */
-function stringNode(template: string = "", vars: string[] = []) {
+function stringNode(template: string = "", vars: { name: string; type: VarType }[] = []) {
   return { kind: "string" as const, template, vars };
 }
 
@@ -75,13 +75,33 @@ describe("generateMessageFile - string nodes", () => {
     const output = generateMessageFile(
       "msg",
       "msg",
-      locales({ en: { msg: stringNode("{name} {count}", ["name", "count"]) } }),
+      locales({ en: { msg: stringNode("{name} {count}", [{ name: "name", type: "string" }, { name: "count", type: "string" }]) } }),
       "en",
     );
     expect(output).toContain("name: string");
     expect(output).toContain("count: string");
     expect(output).toContain("${p.name}");
     expect(output).toContain("${p.count}");
+  });
+
+  test("typed vars in string node generate correct param types", () => {
+    const output = generateMessageFile(
+      "msg",
+      "msg",
+      locales({
+        en: {
+          msg: stringNode("{count:num} items, {isSet:bool}", [
+            { name: "count", type: "number" },
+            { name: "isSet", type: "boolean" },
+          ]),
+        },
+      }),
+      "en",
+    );
+    expect(output).toContain("count: number");
+    expect(output).toContain("isSet: boolean");
+    expect(output).toContain("${p.count}");
+    expect(output).toContain("${p.isSet}");
   });
 
   test("uses custom exportName for exported function", () => {
@@ -259,8 +279,8 @@ describe("generateMessageFile - param union across locales", () => {
       "msg",
       "msg",
       locales({
-        en: { msg: stringNode("{name}", ["name"]) },
-        de: { msg: stringNode("{count}", ["count"]) },
+        en: { msg: stringNode("{name}", [{ name: "name", type: "string" }]) },
+        de: { msg: stringNode("{count}", [{ name: "count", type: "string" }]) },
       }),
       "en",
     );
@@ -314,7 +334,7 @@ describe("generateMessageFile - locale override", () => {
     const output = generateMessageFile(
       "msg",
       "msg",
-      locales({ en: { msg: stringNode("{name}", ["name"]) } }),
+      locales({ en: { msg: stringNode("{name}", [{ name: "name", type: "string" }]) } }),
       "en",
     );
     expect(output).toContain("export function msg(pOrLocale?: Locale): string;");
@@ -338,8 +358,8 @@ describe("generateMessageFile - locale override", () => {
       "msg",
       "msg",
       locales({
-        en: { msg: stringNode("{name}", ["name"]) },
-        de: { msg: stringNode("{name}", ["name"]) },
+        en: { msg: stringNode("{name}", [{ name: "name", type: "string" }]) },
+        de: { msg: stringNode("{name}", [{ name: "name", type: "string" }]) },
       }),
       "en",
     );

@@ -94,7 +94,7 @@ function resolveParams(key: string, locales: CompiledLocales): ParamMap {
 
 function mergeNodeParams(node: MessageNode, out: ParamMap): void {
   if (node.kind === "string") {
-    for (const v of node.vars) out.set(v, "string");
+    for (const v of node.vars) out.set(v.name, v.type);
     return;
   }
 
@@ -139,7 +139,7 @@ function renderStringTemplate(template: string): string {
   const escaped = template
     .replace(/`/g, "\\`")
     .replace(/\$\{/g, "\\${")
-    .replace(/\{(\w+)\}/g, "$${p.$1}");
+    .replace(/\{(\w+)(?::\w+)?\}/g, "$${p.$1}");
   return `\`${escaped}\``;
 }
 

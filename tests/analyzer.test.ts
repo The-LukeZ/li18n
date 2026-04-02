@@ -1,8 +1,8 @@
 import { describe, test, expect } from "bun:test";
 import { analyzeTree } from "../src/analyzer.ts";
-import type { MessageNode, MessageTree } from "../src/types.ts";
+import type { MessageNode, MessageTree, VarType } from "../src/types.ts";
 
-function stringNode(vars: string[] = []): Extract<MessageNode, { kind: "string" }> {
+function stringNode(vars: { name: string; type: VarType }[] = []): Extract<MessageNode, { kind: "string" }> {
   return { kind: "string" as const, template: "", vars };
 }
 
@@ -28,10 +28,10 @@ describe("analyzeTree - string nodes", () => {
   });
 
   test("passes string node with vars through unchanged", () => {
-    const tree: MessageTree = { msg: stringNode(["name", "count"]) };
+    const tree: MessageTree = { msg: stringNode([{ name: "name", type: "string" }, { name: "count", type: "string" }]) };
     const { tree: result, errors } = analyzeTree(tree, "en.json");
     expect(errors).toHaveLength(0);
-    expect(result["msg"]).toEqual(stringNode(["name", "count"]));
+    expect(result["msg"]).toEqual(stringNode([{ name: "name", type: "string" }, { name: "count", type: "string" }]));
   });
 });
 
@@ -244,12 +244,12 @@ describe("analyzeTree - validation errors", () => {
   test("keeps raw node in tree on error so processing continues", () => {
     const tree: MessageTree = {
       bad: conditionalNode("flag", "boolean", [{ key: "invalid", value: "x" }]),
-      good: stringNode(["name"]),
+      good: stringNode([{ name: "name", type: "string" }]),
     };
     const { tree: result, errors } = analyzeTree(tree, "en.json");
     expect(errors).toHaveLength(1);
     expect(result["bad"]).toBeDefined();
-    expect(result["good"]).toEqual(stringNode(["name"]));
+    expect(result["good"]).toEqual(stringNode([{ name: "name", type: "string" }]));
   });
 
   test("accumulates multiple independent errors", () => {

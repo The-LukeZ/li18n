@@ -1,3 +1,4 @@
+# Bun and APIs
 
 Default to using Bun instead of Node.js.
 
@@ -32,7 +33,9 @@ test("hello world", () => {
 
 For more information, read the Bun API docs in `node_modules/bun-types/docs/**.md`.
 
-## Project: li18n
+---
+
+# Project: li18n
 
 Compilation pipeline: `src/parser.ts` → `src/analyzer.ts` → `src/codegen.ts` → `src/writer.ts`
 

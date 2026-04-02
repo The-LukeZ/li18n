@@ -2,8 +2,10 @@
 // These represent the compiler's internal output — distinct from the raw JSON
 // input types, which are inferred from Zod schemas in schemas.ts.
 
+export type VarType = "string" | "number" | "boolean";
+
 export type MessageNode =
-  | { kind: "string"; template: string; vars: string[] }
+  | { kind: "string"; template: string; vars: { name: string; type: VarType }[] }
   | {
       kind: "conditional";
       condVar: string;

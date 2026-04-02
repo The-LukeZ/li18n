@@ -2,6 +2,7 @@
   "$schema": "../../../messages.schema.json",
   "greeting": "Hello {name}!",
   "farewell": "Goodbye",
+  "unread": "You have {count:num} unread messages",
   "nav": {
     "home": "Home",
     "about": "About"

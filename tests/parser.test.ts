@@ -1,5 +1,5 @@
 import { describe, test, expect } from "bun:test";
-import { extractVars, parseLocaleFile } from "../src/parser.ts";
+import { extractVars, extractTypedVars, parseLocaleFile } from "../src/parser.ts";
 
 describe("extractVars", () => {
   test("returns empty array for string with no placeholders", () => {
@@ -35,6 +35,40 @@ describe("extractVars", () => {
   });
 });
 
+describe("extractTypedVars", () => {
+  test("returns empty array for string with no placeholders", () => {
+    expect(extractTypedVars("Hello world")).toEqual([]);
+  });
+
+  test("untyped placeholder defaults to string", () => {
+    expect(extractTypedVars("{name}")).toEqual([{ name: "name", type: "string" }]);
+  });
+
+  test(":num hint maps to number type", () => {
+    expect(extractTypedVars("{count:num}")).toEqual([{ name: "count", type: "number" }]);
+  });
+
+  test(":bool hint maps to boolean type", () => {
+    expect(extractTypedVars("{isSet:bool}")).toEqual([{ name: "isSet", type: "boolean" }]);
+  });
+
+  test(":str hint maps to string type", () => {
+    expect(extractTypedVars("{label:str}")).toEqual([{ name: "label", type: "string" }]);
+  });
+
+  test("mixed typed and untyped placeholders", () => {
+    expect(extractTypedVars("{count:num} {isSet:bool} {name}")).toEqual([
+      { name: "count", type: "number" },
+      { name: "isSet", type: "boolean" },
+      { name: "name", type: "string" },
+    ]);
+  });
+
+  test("deduplicates by name, keeping first occurrence", () => {
+    expect(extractTypedVars("{count:num} and {count}")).toEqual([{ name: "count", type: "number" }]);
+  });
+});
+
 describe("parseLocaleFile", () => {
   test("throws on invalid JSON with filename in message", () => {
     expect(() => parseLocaleFile("not json", "messages/en.json")).toThrow(
@@ -54,7 +88,19 @@ describe("parseLocaleFile", () => {
 
   test("parses a string message and extracts vars", () => {
     const tree = parseLocaleFile(JSON.stringify({ msg: "Hi {name}" }), "en.json");
-    expect(tree["msg"]).toEqual({ kind: "string", template: "Hi {name}", vars: ["name"] });
+    expect(tree["msg"]).toEqual({ kind: "string", template: "Hi {name}", vars: [{ name: "name", type: "string" }] });
+  });
+
+  test("parses typed vars from string message", () => {
+    const tree = parseLocaleFile(JSON.stringify({ msg: "You have {count:num} items, {isSet:bool}" }), "en.json");
+    const node = tree["msg"]!;
+    expect(node.kind).toBe("string");
+    if (node.kind === "string") {
+      expect(node.vars).toEqual([
+        { name: "count", type: "number" },
+        { name: "isSet", type: "boolean" },
+      ]);
+    }
   });
 
   test("stores the original template string alongside vars", () => {
@@ -63,7 +109,7 @@ describe("parseLocaleFile", () => {
     expect(node.kind).toBe("string");
     if (node.kind === "string") {
       expect(node.template).toBe("Hello {name}!");
-      expect(node.vars).toEqual(["name"]);
+      expect(node.vars).toEqual([{ name: "name", type: "string" }]);
     }
   });
 

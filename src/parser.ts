@@ -15,7 +15,7 @@ import type {
   RawMessageValue,
   RawVarField,
 } from "./schemas.ts";
-import type { MessageNode, MessageTree } from "./types.ts";
+import type { MessageNode, MessageTree, VarType } from "./types.ts";
 
 // Public API
 
@@ -51,7 +51,7 @@ function flattenObject(
     const fullKey = prefix ? `${prefix}.${key}` : key;
 
     if (typeof value === "string") {
-      out[fullKey] = { kind: "string", template: value, vars: extractVars(value) };
+      out[fullKey] = { kind: "string", template: value, vars: extractTypedVars(value) };
     } else if (Array.isArray(value)) {
       out[fullKey] = buildConditionalNode(value[0]!);
     } else {
@@ -88,14 +88,28 @@ function parseVarField(varField: RawVarField): {
 
 // Utility
 
-/** Extracts {placeholder} names from a template string. */
+/** Extracts {placeholder} names from a template string (strips any :type suffix). */
 export function extractVars(template: string): string[] {
   const vars: string[] = [];
-  const re = /\{(\w+)\}/g;
+  const re = /\{(\w+)(?::\w+)?\}/g;
   let match: RegExpExecArray | null;
   while ((match = re.exec(template)) !== null) {
     const name = match[1];
     if (name && !vars.includes(name)) vars.push(name);
+  }
+  return vars;
+}
+
+/** Extracts {placeholder} names with optional :type hints from a template string. */
+export function extractTypedVars(template: string): { name: string; type: VarType }[] {
+  const vars: { name: string; type: VarType }[] = [];
+  const re = /\{(\w+)(?::(\w+))?\}/g;
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(template)) !== null) {
+    const name = match[1]!;
+    const hint = match[2];
+    const type: VarType = hint === "num" ? "number" : hint === "bool" ? "boolean" : "string";
+    if (name && !vars.some((v) => v.name === name)) vars.push({ name, type });
   }
   return vars;
 }

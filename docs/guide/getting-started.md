@@ -106,6 +106,38 @@ Or pass the locale directly to any message function:
 m.greeting({ name: "Alice" }, "de"); // "Hallo Alice!"
 ```
 
+## Troubleshooting
+
+<details>
+  <summary>"No overload matches this call"</summary>
+
+This error usually occurs if you pass variables with the wrong type, or forget to pass required variables.
+
+For example, if you have a message with `count` variable, which is a string in the message file:
+
+```json
+{
+  "itemCount": "{count} items"
+}
+```
+
+Then you must pass `count` as a string:
+
+```ts
+m.itemCount({ count: "3" }); // ✅
+m.itemCount({ count: 3 }); // ❌ No overload matches this call
+```
+
+<Badge type="tip" text="New in v0.5.0" /> If you want `count` to be a number, you can use the typed variable syntax in your message file:
+
+```json
+{
+  "itemCount": "{count:number} items"
+}
+```
+
+</details>
+
 ## Next steps
 
 - Learn about the full [Message Format](/guide/message-format) - conditionals and pluralization

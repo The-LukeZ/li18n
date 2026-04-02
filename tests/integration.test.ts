@@ -25,10 +25,10 @@ describe("compile() - full pipeline", () => {
     expect(result.errors).toHaveLength(0);
   });
 
-  test("reports correct key count (6 keys from both locales)", async () => {
+  test("reports correct key count", async () => {
     const result = await compile({ configPath: CONFIG_PATH, outputDir: OUTPUT_DIR });
-    // keys: greeting, farewell, nav.home, nav.about, role, items, lang = 7
-    expect(result.keyCount).toBe(7);
+    // keys: greeting, farewell, unread, nav.home, nav.about, role, items, lang = 8
+    expect(result.keyCount).toBe(8);
   });
 
   test("writes index.ts to outputDir", async () => {
