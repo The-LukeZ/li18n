@@ -16,6 +16,8 @@ export default defineConfig({
     ],
   ],
 
+  cleanUrls: true,
+
   themeConfig: {
     nav: [
       { text: "Guide", link: "/guide/getting-started" },
