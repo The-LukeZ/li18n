@@ -7,8 +7,6 @@ This guide walks through building a localized Discord bot using **li18n**, a com
 
 _I've already wrote a guide on this some months ago, but that was with a different package - which is not designed for such stuff and also had some bugs._
 
----
-
 ## Why li18n?
 
 Most i18n libraries follow the same pattern: load a big JSON file at runtime, look up a string by key, interpolate variables. This works, but it has downsides:
@@ -19,8 +17,6 @@ Most i18n libraries follow the same pattern: load a big JSON file at runtime, lo
 
 li18n takes a different approach. You define your messages in JSON, run `li18n build`, and get plain TypeScript functions - one per message key.
 The generated code is just functions and `switch` statements. There's nothing to parse at runtime, and your editor knows exactly which parameters each message requires.
-
----
 
 ## Installing
 
@@ -35,8 +31,6 @@ bun li18n init
 ```
 
 This creates a `li18n.config.json` and a `messages/` directory with example locale files.
-
----
 
 ## Project layout
 
@@ -53,8 +47,6 @@ my-bot/
 └── index.ts
 ```
 
----
-
 ## Configuration
 
 `li18n.config.json` tells the compiler where your messages live and where to write the output:
@@ -67,8 +59,6 @@ my-bot/
   "outputDir": "./src/i18n"
 }
 ```
-
----
 
 ## Defining messages
 
@@ -178,8 +168,6 @@ A few things to notice:
 
 See the [message format reference](/guide/message-format) for more details on the syntax and features available in message files.
 
----
-
 ## Compiling
 
 ```bash
@@ -193,8 +181,6 @@ To validate that all locales are consistent without writing any files:
 ```bash
 bun li18n check
 ```
-
----
 
 ## The generated API
 
@@ -217,8 +203,6 @@ m.statusShards({ count: 3 }); // number conditional, no locale arg needed
 ```
 
 TypeScript will catch you if you forget a required parameter or pass the wrong type.
-
----
 
 ## Wiring it into Discord.js
 
@@ -447,8 +431,6 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
 </details>
 
----
-
 ## How concurrent requests stay isolated
 
 Because `withLocale` uses `AsyncLocalStorage` under the hood, two simultaneous interactions never see each other's locale. If a German user and an English user both trigger `/ping` at the same moment, each `withLocale` call creates its own isolated storage slot. There's no global state to race on.
@@ -470,8 +452,6 @@ const execute = withLocale(async (interaction) => {
 
 `overwriteGetLocale` only affects the current `withLocale` context - other concurrent handlers are unaffected.
 
----
-
 ## Development workflow
 
 ```bash
@@ -489,8 +469,6 @@ Since the output directory is auto-generated, add it to `.gitignore` (li18n does
 
 > [!TIP]
 > With watch mode, it is recommended to change your save behavior in your editor to "save on focus change" or increase the debounce delay, to avoid triggering a build on every keystroke (this could result in bugs).
-
----
 
 ## What you get
 
