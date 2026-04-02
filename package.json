@@ -5,7 +5,7 @@
   "repository": {
     "url": "git+https://github.com/The-LukeZ/li18n.git"
   },
-  "homepage": "https://github.com/The-LukeZ/li18n?tab=readme-ov-file",
+  "homepage": "https://li18n.thelukez.com/",
   "scripts": {
     "build": "bun scripts/generate-schema.ts && tsdown",
     "dev": "bun run bin/li18n.ts",
