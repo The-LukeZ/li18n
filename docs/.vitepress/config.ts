@@ -48,6 +48,10 @@ export default defineConfig({
           text: "Config Reference",
           link: "/reference/config",
         },
+        {
+          text: "Localize your Discord Bot",
+          link: "/guide/how-to-localize-your-discord-bot-in-2026",
+        },
       ],
       "/reference/": [
         { text: "Reference", items: [{ text: "Config Reference", link: "/reference/config" }] },
