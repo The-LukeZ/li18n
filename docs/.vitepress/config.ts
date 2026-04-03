@@ -1,4 +1,5 @@
 import { defineConfig } from "vitepress";
+import llmstxt from "vitepress-plugin-llms";
 
 export default defineConfig({
   title: "li18n",
@@ -85,5 +86,13 @@ export default defineConfig({
 
   sitemap: {
     hostname: "https://li18n.thelukez.com",
+  },
+
+  vite: {
+    plugins: [
+      llmstxt({
+        ignoreFiles: ["index.md"],
+      }),
+    ],
   },
 });
