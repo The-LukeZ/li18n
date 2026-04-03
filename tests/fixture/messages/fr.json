@@ -19,5 +19,6 @@
       "var": "locale",
       "cases": { "en": "Englisch", "de": "Deutsch", "else": "Andere" }
     }
-  ]
+  ],
+  "delete": "Supprimer {item}"
 }

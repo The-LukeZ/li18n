@@ -27,8 +27,8 @@ describe("compile() - full pipeline", () => {
 
   test("reports correct key count", async () => {
     const result = await compile({ configPath: CONFIG_PATH, outputDir: OUTPUT_DIR });
-    // keys: greeting, farewell, unread, nav.home, nav.about, role, items, lang = 8
-    expect(result.keyCount).toBe(8);
+    // keys: greeting, farewell, unread, nav.home, nav.about, role, items, lang, delete = 9
+    expect(result.keyCount).toBe(9);
   });
 
   test("writes index.ts to outputDir", async () => {
@@ -69,11 +69,12 @@ describe("compile() - full pipeline", () => {
     expect(content).toContain("role");
     expect(content).toContain("items");
     expect(content).toContain("lang");
+    expect(content).toContain("delete");
   });
 
   test("writes a message file per key", async () => {
     await compile({ configPath: CONFIG_PATH, outputDir: OUTPUT_DIR });
-    const keys = ["greeting", "farewell", "navHome", "navAbout", "role", "items", "lang"];
+    const keys = ["greeting", "farewell", "navHome", "navAbout", "role", "items", "lang", "delete"];
     for (const key of keys) {
       const file = Bun.file(path.join(OUTPUT_DIR, `messages/${key}.ts`));
       expect(await file.exists()).toBe(true);
@@ -89,7 +90,7 @@ describe("compile() - full pipeline", () => {
     expect(content).toContain("const _de =");
     expect(content).toContain(`case "de":`);
     expect(content).toContain("default:");
-    expect(content).toContain("export function greeting");
+    expect(content).toContain("export function _greeting");
   });
 
   test("boolean conditional message file has boolean param", async () => {
@@ -129,5 +130,14 @@ describe("compile() - full pipeline", () => {
 
     const mtimeAfter = statSync(runtimePath).mtimeMs;
     expect(mtimeAfter).toBe(mtimeBefore);
+  });
+
+  // functions in message files are always prefixed with an underscore to avoid reserved keyword issues, but the export name should be the original key name (even if it's a reserved word)
+  test("reserved key names are handled correctly", async () => {
+    await compile({ configPath: CONFIG_PATH, outputDir: OUTPUT_DIR });
+    const deleteMsgContent = await Bun.file(path.join(OUTPUT_DIR, "messages/delete.ts")).text();
+    const indexContent = await Bun.file(path.join(OUTPUT_DIR, "messages/_index.ts")).text();
+    expect(deleteMsgContent).toContain("export function _delete");
+    expect(indexContent).toContain('export { _delete as "delete" }');
   });
 });

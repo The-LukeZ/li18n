@@ -41,10 +41,11 @@ export async function writeOutput(
 
   for (const key of keys) {
     const exportName = keyToExportName(key);
+    const fnName = `_${exportName}`;
     const fileName = `${exportName}.ts`;
-    const content = generateMessageFile(key, exportName, locales, defaultLocale);
+    const content = generateMessageFile(key, fnName, locales, defaultLocale);
     await writeFile(path.join(messagesDir, fileName), content);
-    exportNames.push({ key, exportName, fileName });
+    exportNames.push({ key, exportName: fnName, fileName });
   }
 
   // Write messages/_index.ts
