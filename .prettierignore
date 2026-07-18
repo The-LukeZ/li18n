@@ -10,3 +10,4 @@ docs/node_modules/
 docs/.vitepress/*
 !docs/.vitepress/config.ts
 docs/bun.lock
+docs/worker-configuration.d.ts
