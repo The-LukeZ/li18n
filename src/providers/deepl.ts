@@ -31,6 +31,7 @@ export async function deeplTranslate(options: DeepLTranslateOptions): Promise<st
     const body: Record<string, unknown> = {
       text: batch,
       target_lang: targetLocale.toUpperCase(),
+      preserve_formatting: true,
     };
     if (sourceLocale) body.source_lang = sourceLocale.toUpperCase();
 
