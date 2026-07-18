@@ -11,7 +11,12 @@ afterEach(() => {
 
 describe("deeplTranslate", () => {
   test("sends batched requests and returns translated texts in order", async () => {
-    const calls: { text: string[]; target_lang: string; source_lang?: string }[] = [];
+    const calls: {
+      text: string[];
+      target_lang: string;
+      source_lang?: string;
+      preserve_formatting: boolean;
+    }[] = [];
     globalThis.fetch = (async (_url: string, init: RequestInit) => {
       const body = JSON.parse(init.body as string);
       calls.push(body);
@@ -30,7 +35,12 @@ describe("deeplTranslate", () => {
 
     expect(result).toEqual(["DE:Hello", "DE:World"]);
     expect(calls).toHaveLength(1);
-    expect(calls[0]).toEqual({ text: ["Hello", "World"], target_lang: "DE", source_lang: "EN" });
+    expect(calls[0]).toEqual({
+      text: ["Hello", "World"],
+      target_lang: "DE",
+      source_lang: "EN",
+      preserve_formatting: true,
+    });
   });
 
   test("chunks requests larger than the 50-text batch limit", async () => {
