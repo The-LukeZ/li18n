@@ -23,7 +23,8 @@ const remarkPlugins = [
 const rehypePlugins = [rehypeCode];
 
 export default defineConfig({
-  output: "static",
+  output: "server",
+
   trailingSlash: "ignore",
   site: "https://li18n.thelukez.com",
   outDir: "dist",
