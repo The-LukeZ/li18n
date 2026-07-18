@@ -60,19 +60,22 @@ On npm the package is named `@the-lukez/li18n` (not just `li18n`) to avoid confl
 - `src/codegen.ts` exports `generateMessageFile(key, exportName, locales, defaultLocale)` — generates `.ts` source per message key.
 - `src/writer.ts` writes all output files; exports `keyToExportName(key)` (dot-keys → camelCase). `runtime.ts` is only overwritten if its content has changed.
 - `src/index.ts` exports `compile(options: CompileOptions): Promise<CompileResult>` — orchestrates the full pipeline.
-- CLI entry: `bin/li18n.ts` — commands: `build`, `watch`, `check`, `init`.
+- CLI entry: `bin/li18n.ts` — commands: `build`, `watch`, `check`, `translate`, `init`. Handlers live in `bin/utils/commands/*.ts` (e.g. `runBuild`, `runTranslate`).
 - CLI is built with **`make-cli`** (`import makeCli from "make-cli"`). Commands are declared via `makeCli({ name, commands: [...] })` — each command has `name`, `description`, `options[]`, and an async `handler`.
 - Shared `configOption` (`--config <path>`, default `li18n.config.json`) is defined once and spread into each command's `options` array.
 - Adding a new command: add an entry to the `commands` array in `bin/li18n.ts` and implement the handler as a top-level `async function run<Name>(...)`.
+- `src/translate.ts` — locale-JSON helpers used by `translate`: `parseRawLocale`, `flattenKeys`, `findMissingKeys`, `setNestedKey`, `collectLeafTexts`, `rebuildWithLeafTexts`, `maskVars`/`unmaskVars` (masks `{var}` placeholders so providers don't mangle them).
+- `src/providers/deepl.ts` and `src/providers/google.ts` — thin REST clients (no SDKs) exporting `deeplTranslate`/`googleTranslate` and `resolveDeepLApiKey`/`resolveGoogleApiKey`.
 
 ### CLI commands
 
 | Command | Description | Options |
 |---------|-------------|---------|
-| `build` | Compile locale files once | `--config` |
+| `build` | Compile locale files once | `--config`, `--no-clean` |
 | `watch` | Recompile on changes to messagesDir | `--config` |
 | `check` | Validate keys across all locales, no output written | `--config` |
-| `init` | Create a default `li18n.config.json` in the current directory | — |
+| `translate` | Fill in missing keys in non-default locales via DeepL or Google Translate | `--config`, `--provider`, `--api-key-env`, `--locales`, `--dry-run` |
+| `init` | Create a default `li18n.config.json` in the current directory | `--messages-dir` |
 
 ### Runtime output (generated files)
 
@@ -103,6 +106,7 @@ Tests live in `tests/`. Run with `bun run test` (NOT just `bun test` as the scri
 | `writer.test.ts` | `keyToExportName` |
 | `config.test.ts` | `loadConfig` validation and error cases |
 | `index.test.ts` | `withLocale` runtime helper |
+| `translate.test.ts` | `src/translate.ts` helpers (flatten/mask/rebuild) and provider clients |
 | `integration.test.ts` | Full `compile()` pipeline against `tests/fixture/` |
 
 Helpers like `stringNode()`, `conditionalNode()`, `locales()` are defined inside test files to construct AST test data. Fixture files live in `tests/fixture/`.
