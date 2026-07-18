@@ -9,7 +9,9 @@ export const source = loader({
   baseUrl: "/",
 });
 
-export function getStructuredData(entry: CollectionEntry<"docs">): StructuredData {
+export function getStructuredData(
+  entry: CollectionEntry<"docs">,
+): StructuredData {
   return structure(entry.body!);
 }
 

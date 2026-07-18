@@ -21,11 +21,16 @@ export function Docs({
   page?: DocsPageProps;
 }) {
   return (
-    <RootProvider pathname={pathname} params={params} navigate={navigate} search={{ SearchDialog }}>
+    <RootProvider
+      pathname={pathname}
+      params={params}
+      navigate={navigate}
+      search={{ SearchDialog }}
+    >
       <DocsLayout
         tree={tree}
         sidebar={{ defaultOpenLevel: 1 }}
-        githubUrl="https://github.com/The-LukeZ/li18n"
+        githubUrl='https://github.com/The-LukeZ/li18n'
         links={[
           {
             text: "npm",

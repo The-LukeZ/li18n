@@ -78,12 +78,13 @@ This generates typed TypeScript files in `outputDir`.
 
 ### 4. Import and use
 
-<Callout type="warn">
-  li18n is not designed for webservers with per-request state - while it may work, it is not
-  supported officially - please make open issues on GitHub if you got it working. If you want
-  localization for express, hono or similar, use another library. Instead, li18n is ideal for
-  functional programming styles - like Discord bots - where you can pass the locale explicitly or
-  use `withLocale()` to scope it.
+<Callout type='warn'>
+  li18n is not designed for webservers with per-request state - while it may
+  work, it is not supported officially - please make open issues on GitHub if
+  you got it working. If you want localization for express, hono or similar, use
+  another library. Instead, li18n is ideal for functional programming styles -
+  like Discord bots - where you can pass the locale explicitly or use
+  `withLocale()` to scope it.
 </Callout>
 
 ```ts

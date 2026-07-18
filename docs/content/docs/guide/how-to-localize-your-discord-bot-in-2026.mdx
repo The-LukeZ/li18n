@@ -191,7 +191,13 @@ After compilation, your entry point is `src/i18n/index.ts`:
 
 ```typescript
 export * as m from "./messages/_index.ts";
-export { getLocale, overwriteGetLocale, withLocale, locales, baseLocale } from "./runtime.ts";
+export {
+  getLocale,
+  overwriteGetLocale,
+  withLocale,
+  locales,
+  baseLocale,
+} from "./runtime.ts";
 export type { Locale, MaybePromise } from "./runtime.ts";
 ```
 
@@ -244,7 +250,10 @@ export const data = new SlashCommandBuilder()
   .setDescription("Check the bot latency");
 
 const execute = withLocale(async (interaction: ChatInputCommandInteraction) => {
-  const sent = await interaction.reply({ content: "Pinging…", fetchReply: true });
+  const sent = await interaction.reply({
+    content: "Pinging…",
+    fetchReply: true,
+  });
   const latency = sent.createdTimestamp - interaction.createdTimestamp;
 
   await interaction.editReply(m.pingReply({ latency }));
@@ -272,7 +281,10 @@ export const data = new SlashCommandBuilder()
   .setName("role")
   .setDescription("Toggle a role")
   .addRoleOption((option) =>
-    option.setName("role").setDescription("The role to toggle").setRequired(true),
+    option
+      .setName("role")
+      .setDescription("The role to toggle")
+      .setRequired(true),
   );
 
 const execute = withLocale(async (interaction: ChatInputCommandInteraction) => {
@@ -317,7 +329,10 @@ export const data = new SlashCommandBuilder()
     o.setName("minutes").setDescription("Minutes from now").setRequired(true),
   )
   .addStringOption((o) =>
-    o.setName("message").setDescription("What to remind you of").setRequired(true),
+    o
+      .setName("message")
+      .setDescription("What to remind you of")
+      .setRequired(true),
   );
 
 const execute = withLocale(async (interaction: ChatInputCommandInteraction) => {
@@ -326,14 +341,19 @@ const execute = withLocale(async (interaction: ChatInputCommandInteraction) => {
 
   if (minutes < 1) {
     // The conditional picks the right case based on the value of `minutes`
-    await interaction.reply({ content: m.remindTooShort({ minutes }), ephemeral: true });
+    await interaction.reply({
+      content: m.remindTooShort({ minutes }),
+      ephemeral: true,
+    });
     return;
   }
 
   await interaction.reply(m.remindSet({ minutes }));
 
   setTimeout(async () => {
-    await interaction.followUp(m.remindFire({ username: interaction.user.username, message }));
+    await interaction.followUp(
+      m.remindFire({ username: interaction.user.username, message }),
+    );
   }, minutes * 60_000);
 }, resolveLocale);
 
@@ -375,9 +395,10 @@ client.on("interactionCreate", async (interaction) => {
 client.login(process.env.DISCORD_TOKEN);
 ```
 
-<Callout type="info">
-  If you got a lot of commands with the same locale resolver, you can create a helper class that
-  wraps `withLocale` and hardcodes the resolver, so you don't have to repeat it everywhere.
+<Callout type='info'>
+  If you got a lot of commands with the same locale resolver, you can create a
+  helper class that wraps `withLocale` and hardcodes the resolver, so you don't
+  have to repeat it everywhere.
 </Callout>
 
 <details>
@@ -391,12 +412,21 @@ import type { Client, Collection, ClientEvents } from "discord.js";
 export class InteractionHandler {
   #client: Client;
   #commands: Collection<string, { execute: (...args: any[]) => Promise<void> }>;
-  #components: Collection<string, { execute: (...args: any[]) => Promise<void> }>;
+  #components: Collection<
+    string,
+    { execute: (...args: any[]) => Promise<void> }
+  >;
 
   constructor(
     client: Client,
-    commands: Collection<string, { execute: (...args: any[]) => Promise<void> }>,
-    components: Collection<string, { execute: (...args: any[]) => Promise<void> }>,
+    commands: Collection<
+      string,
+      { execute: (...args: any[]) => Promise<void> }
+    >,
+    components: Collection<
+      string,
+      { execute: (...args: any[]) => Promise<void> }
+    >,
   ) {
     this.#client = client;
     this.#commands = commands;
@@ -472,10 +502,10 @@ bunx li18n build
 
 Since the output directory is auto-generated, add it to `.gitignore` (li18n does this automatically) and rebuild as part of your deployment step.
 
-<Callout type="info">
-  With watch mode, it is recommended to change your save behavior in your editor to "save on focus
-  change" or increase the debounce delay, to avoid triggering a build on every keystroke (this could
-  result in bugs).
+<Callout type='info'>
+  With watch mode, it is recommended to change your save behavior in your editor
+  to "save on focus change" or increase the debounce delay, to avoid triggering
+  a build on every keystroke (this could result in bugs).
 </Callout>
 
 ## What you get
