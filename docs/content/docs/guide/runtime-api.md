@@ -1,4 +1,7 @@
-# Runtime API
+---
+title: Runtime API
+description: Locale management utilities exposed by the generated runtime.ts.
+---
 
 The generated `runtime.ts` (in your `outputDir`) exposes locale management utilities. It is re-exported from the root `index.ts` alongside all message functions.
 

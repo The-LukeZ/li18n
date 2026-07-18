@@ -110,3 +110,17 @@ Tests live in `tests/`. Run with `bun run test` (NOT just `bun test` as the scri
 | `integration.test.ts` | Full `compile()` pipeline against `tests/fixture/` |
 
 Helpers like `stringNode()`, `conditionalNode()`, `locales()` are defined inside test files to construct AST test data. Fixture files live in `tests/fixture/`.
+
+### Docs site (`docs/`)
+
+Docs are an **Astro + Fumadocs** static site (migrated from VitePress), deployed to `li18n.thelukez.com`.
+
+- Stack: `astro` (`output: "static"`, no adapter), `@astrojs/react`, `@astrojs/mdx`, `@astrojs/sitemap`, `fumadocs-core`, `fumadocs-ui` (`npm:@fumadocs/base-ui`), `@orama/orama` for search, Tailwind v4 via `@tailwindcss/vite`.
+- Content lives in `docs/content/docs/**` (`.md`/`.mdx`), one `meta.json` per folder listing `pages` order. Frontmatter requires `title`; `description` optional.
+- Use `.mdx` only when a page needs JSX (e.g. `<Callout type="...">`, custom hero markup on `content/docs/index.mdx`); plain `.md` otherwise.
+- Package-manager install tabs: fence with ```` ```npm ```` containing a single `npm i ...` command — `remarkNpm` (from `fumadocs-core/mdx-plugins`) auto-generates the bun/npm/pnpm/yarn tabs via `CodeBlockTabs`, already registered in `defaultMdxComponents`. (`package-install` lang is a *different* plugin, `remarkInstall` from the separate `fumadocs-docgen` package — not used here.)
+- `docs/src/lib/source.ts` bridges Astro content collections into a fumadocs `loader()` source; `docs/src/pages/[...slug].astro` renders every page through the shared `Docs` layout (`docs/src/components/docs.tsx`).
+- Search index is static: `docs/src/pages/api/search.ts` is prerendered (`export const prerender = true`) and fetched client-side by `oramaStaticClient` (default path `/api/search`) in `docs/src/components/search.tsx`.
+- Theme toggle is enabled (fumadocs default `next-themes`, `attribute: "class"`) — don't force a `dark` class in `docs/src/components/layout.astro`.
+- Scripts: `docs:dev` / `docs:build` / `docs:preview` at the repo root map to `astro dev` / `astro build` / `astro preview` in `docs/`.
+- `llms.txt` generation (previously via `vitepress-plugin-llms`) was intentionally dropped during the migration and is being re-added separately — don't reintroduce a `vitepress-plugin-llms`-style dependency without checking first.

@@ -3,14 +3,33 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vitepress dev",
-    "build": "vitepress build",
-    "preview": "vitepress preview"
-  },
-  "devDependencies": {
-    "vitepress": "^1.6.4"
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
   "dependencies": {
-    "vitepress-plugin-llms": "^1.12.0"
+    "@astrojs/markdown-remark": "^7.2.1",
+    "@astrojs/mdx": "^7.0.2",
+    "@astrojs/react": "^6.0.1",
+    "@orama/orama": "^3.1.18",
+    "astro": "^7.0.7",
+    "fumadocs-core": "16.11.2",
+    "fumadocs-ui": "npm:@fumadocs/base-ui@16.11.2",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "sharp": "^0.35.3",
+    "takumi-js": "^2.0.2"
+  },
+  "devDependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "@tailwindcss/vite": "^4.3.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "tailwindcss": "^4.3.2"
+  },
+  "overrides": {
+    "@base-ui-components/react": "1.6.0"
   }
 }

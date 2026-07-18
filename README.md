@@ -18,6 +18,7 @@ A simple, type-safe i18n library for TypeScript. Define your messages in JSON, g
 - **Fully typed** — every message key becomes a typed TypeScript function; variables and conditionals are reflected in the signature
 - **Conditionals & pluralization** — boolean, string, and number conditionals with case-based dispatch
 - **Async-safe locale scoping** — built-in `AsyncLocalStorage` support via `withLocale()` for per-request isolation
+- **Integrated Machine Translation Providers** — DeepL and Google Translate support for automatic translation of missing messages
 
 ## Quick start
 

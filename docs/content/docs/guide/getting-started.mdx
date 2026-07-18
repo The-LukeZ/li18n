@@ -1,4 +1,7 @@
-# Getting Started
+---
+title: Getting Started
+description: Install li18n and compile your first typed message functions.
+---
 
 li18n compiles your JSON locale files into TypeScript modules. Each message key becomes a typed function. No runtime parsing, no stringly-typed keys.
 
@@ -13,21 +16,11 @@ m.itemCount({ count: 3 }); // "3 items"
 
 ## Installation
 
-::: code-group
+{/* TODO: Add ```npm when know how to */}
 
-```bash [bun]
-bun add -D @the-lukez/li18n
 ```
-
-```bash [npm]
-npm install -D @the-lukez/li18n
+npm i -D @the-lukez/li18n
 ```
-
-```bash [pnpm]
-pnpm add -D @the-lukez/li18n
-```
-
-:::
 
 ## Setup
 
@@ -85,11 +78,13 @@ This generates typed TypeScript files in `outputDir`.
 
 ### 4. Import and use
 
-> [!IMPORTANT]
-> li18n is not designed for webservers with per-request state - while it may work, it is not supported officially - please make open issues on GitHub if you got it working.
->
-> If you want localization for express, hono or similar, use another library. Instead, li18n is ideal for functional programming styles - like Discord bots -
-> where you can pass the locale explicitly or use `withLocale()` to scope it.
+<Callout type="warn">
+  li18n is not designed for webservers with per-request state - while it may work, it is not
+  supported officially - please make open issues on GitHub if you got it working. If you want
+  localization for express, hono or similar, use another library. Instead, li18n is ideal for
+  functional programming styles - like Discord bots - where you can pass the locale explicitly or
+  use `withLocale()` to scope it.
+</Callout>
 
 ```ts
 import { m, withLocale } from "./src/i18n";
@@ -128,7 +123,7 @@ m.itemCount({ count: "3" }); // ✅
 m.itemCount({ count: 3 }); // ❌ No overload matches this call
 ```
 
-<Badge type="tip" text="New in v0.5.0" /> If you want `count` to be a number, you can use the typed variable syntax in your message file:
+_(New in v0.5.0)_ If you want `count` to be a number, you can use the typed variable syntax in your message file:
 
 ```json
 {

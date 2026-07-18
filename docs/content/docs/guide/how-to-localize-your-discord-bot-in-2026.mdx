@@ -1,4 +1,7 @@
-# How to Localize your Discord Bot in 2026
+---
+title: How to Localize your Discord Bot in 2026
+description: Build a localized Discord bot with li18n, a compile-time i18n library for TypeScript.
+---
 
 Discord bots reach users across the globe. If your bot replies in English-only (or whatever language you choose), you're leaving a huge portion of your audience with a worse experience.
 Discord even provides a `locale` field on every interaction, so you already know what language each user prefers - you just need to use it.
@@ -372,8 +375,10 @@ client.on("interactionCreate", async (interaction) => {
 client.login(process.env.DISCORD_TOKEN);
 ```
 
-> [!TIP]
-> If you got a lot of commands with the same locale resolver, you can create a helper class that wraps `withLocale` and hardcodes the resolver, so you don't have to repeat it everywhere.
+<Callout type="info">
+  If you got a lot of commands with the same locale resolver, you can create a helper class that
+  wraps `withLocale` and hardcodes the resolver, so you don't have to repeat it everywhere.
+</Callout>
 
 <details>
   <summary>Example interaction handler class</summary>
@@ -467,8 +472,11 @@ bunx li18n build
 
 Since the output directory is auto-generated, add it to `.gitignore` (li18n does this automatically) and rebuild as part of your deployment step.
 
-> [!TIP]
-> With watch mode, it is recommended to change your save behavior in your editor to "save on focus change" or increase the debounce delay, to avoid triggering a build on every keystroke (this could result in bugs).
+<Callout type="info">
+  With watch mode, it is recommended to change your save behavior in your editor to "save on focus
+  change" or increase the debounce delay, to avoid triggering a build on every keystroke (this could
+  result in bugs).
+</Callout>
 
 ## What you get
 

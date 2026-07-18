@@ -1,4 +1,7 @@
-# CLI
+---
+title: CLI
+description: Commands for compiling, validating, and translating locale files.
+---
 
 li18n ships a CLI for compiling and validating your locale files.
 

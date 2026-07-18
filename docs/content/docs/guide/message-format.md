@@ -1,4 +1,7 @@
-# Message Format
+---
+title: Message Format
+description: Simple strings, interpolated variables, and conditional branches in locale JSON files.
+---
 
 Messages are defined as JSON files - one file per locale. li18n supports simple strings, interpolated variables, and conditional branches.
 
@@ -40,7 +43,7 @@ Use an array to define a conditional message:
 The variable type is inferred from the cases, or you can declare it explicitly:
 
 | Syntax                          | Type     |
-| ------------------------------- | -------- |
+| -------------------------------- | -------- |
 | `{ "var": "name" }`             | inferred |
 | `{ "var": { "bool": "name" } }` | boolean  |
 | `{ "var": { "num": "name" } }`  | number   |

@@ -1,0 +1,33 @@
+---
+title: li18n
+description: Simple, type-safe i18n for TypeScript. Define your messages in JSON, get fully-typed TypeScript functions out. No runtime parsing, no stringly-typed keys.
+---
+
+Define your messages in JSON, get fully-typed TypeScript functions out. No runtime parsing, no stringly-typed keys.
+
+<div className="flex gap-3 not-prose my-6">
+  <a
+    href="/guide/getting-started"
+    className="inline-flex items-center rounded-md bg-fd-primary text-fd-primary-foreground px-4 py-2 text-sm font-medium"
+  >
+    Get Started
+  </a>
+  <a
+    href="https://github.com/The-LukeZ/li18n"
+    className="inline-flex items-center rounded-md border border-fd-border px-4 py-2 text-sm font-medium"
+  >
+    View on GitHub
+  </a>
+</div>
+
+## Fully Typed
+
+Every message key becomes a typed TypeScript function. Variables and conditionals are reflected in the function signature - caught at compile time, not runtime.
+
+## Conditionals & Pluralization
+
+Boolean, string, and number conditionals with case-based dispatch. Number cases support JS comparison operators for pluralization.
+
+## Async-Safe Locale Scoping
+
+Built-in `AsyncLocalStorage` support via `withLocale()` - isolate locale per-request in servers and Discord bots without global state collisions.

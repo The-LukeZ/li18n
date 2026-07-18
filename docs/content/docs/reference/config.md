@@ -1,4 +1,7 @@
-# Config Reference
+---
+title: Config Reference
+description: Full reference for li18n.config.json fields.
+---
 
 li18n is configured via `li18n.config.json` in your project root.
 
