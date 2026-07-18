@@ -116,8 +116,8 @@ Helpers like `stringNode()`, `conditionalNode()`, `locales()` are defined inside
 Docs are an **Astro + Fumadocs** static site (migrated from VitePress), deployed to `li18n.thelukez.com`.
 
 - Stack: `astro` (`output: "static"`, no adapter), `@astrojs/react`, `@astrojs/mdx`, `@astrojs/sitemap`, `fumadocs-core`, `fumadocs-ui` (`npm:@fumadocs/base-ui`), `@orama/orama` for search, Tailwind v4 via `@tailwindcss/vite`.
-- Content lives in `docs/content/docs/**` (`.md`/`.mdx`), one `meta.json` per folder listing `pages` order. Frontmatter requires `title`; `description` optional.
-- Use `.mdx` only when a page needs JSX (e.g. `<Callout type="...">`, custom hero markup on `content/docs/index.mdx`); plain `.md` otherwise.
+- Content lives in `docs/content/docs/**`, one `meta.json` per folder listing `pages` order. Frontmatter requires `title`; `description` optional.
+- All content pages use `.mdx`, never plain `.md`. Astro's `components` override on `<Content />` (used to inject fumadocs' `pre`/`code` codeblock wrapper) only applies to `.mdx` — `.md` pages render raw HTML and lose codeblock styling (falls back to looking like inline code). See [withastro/roadmap#769](https://github.com/withastro/roadmap/discussions/769).
 - Package-manager install tabs: fence with ```` ```npm ```` containing a single `npm i ...` command — `remarkNpm` (from `fumadocs-core/mdx-plugins`) auto-generates the bun/npm/pnpm/yarn tabs via `CodeBlockTabs`, already registered in `defaultMdxComponents`. (`package-install` lang is a *different* plugin, `remarkInstall` from the separate `fumadocs-docgen` package — not used here.)
 - `docs/src/lib/source.ts` bridges Astro content collections into a fumadocs `loader()` source; `docs/src/pages/[...slug].astro` renders every page through the shared `Docs` layout (`docs/src/components/docs.tsx`).
 - Search index is static: `docs/src/pages/api/search.ts` is prerendered (`export const prerender = true`) and fetched client-side by `oramaStaticClient` (default path `/api/search`) in `docs/src/components/search.tsx`.

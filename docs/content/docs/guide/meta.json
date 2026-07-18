@@ -1,4 +1,10 @@
 {
   "title": "Guide",
-  "pages": ["getting-started", "message-format", "cli", "runtime-api", "how-to-localize-your-discord-bot-in-2026"]
+  "pages": [
+    "getting-started",
+    "message-format",
+    "cli",
+    "runtime-api",
+    "how-to-localize-your-discord-bot-in-2026"
+  ]
 }
