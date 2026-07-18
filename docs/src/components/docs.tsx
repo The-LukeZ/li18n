@@ -35,6 +35,7 @@ export function Docs({
           {
             text: "npm",
             url: "https://www.npmjs.com/package/@the-lukez/li18n",
+            external: true,
           },
         ]}
         nav={{
