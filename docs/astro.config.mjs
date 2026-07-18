@@ -12,6 +12,8 @@ import {
   remarkStructure,
 } from "fumadocs-core/mdx-plugins";
 
+import cloudflare from "@astrojs/cloudflare";
+
 /** @type {import('@astrojs/markdown-remark').RemarkPlugins} */
 const remarkPlugins = [
   remarkHeading,
@@ -55,4 +57,6 @@ export default defineConfig({
       ],
     },
   },
+
+  adapter: cloudflare(),
 });
