@@ -80,7 +80,10 @@
               ],
               "additionalProperties": false
             }
-          ]
+          ],
+          "items": false,
+          "minItems": 1,
+          "maxItems": 1
         },
         {
           "type": "object",

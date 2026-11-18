@@ -65,6 +65,7 @@ On npm the package is named `@the-lukez/li18n` (not just `li18n`) to avoid confl
 - Shared `configOption` (`--config <path>`, default `li18n.config.json`) is defined once and spread into each command's `options` array.
 - Adding a new command: add an entry to the `commands` array in `bin/li18n.ts` and implement the handler as a top-level `async function run<Name>(...)`.
 - `src/translate.ts` — locale-JSON helpers used by `translate`: `parseRawLocale`, `flattenKeys`, `findMissingKeys`, `setNestedKey`, `collectLeafTexts`, `rebuildWithLeafTexts`, `maskVars`/`unmaskVars` (masks `{var}` placeholders so providers don't mangle them).
+- `src/env.ts`: `parseEnv(text)` and `loadEnvFiles({ envFile?, searchDirs, env? })`. `translate` loads only `--env-file` when given (must exist), else tries `DEFAULT_ENV_FILES` (`.env.local`, `.env.development.local`, `.env.development`, `.env`) in cwd and the config dir. Existing env vars are never overwritten.
 - `src/providers/deepl.ts` and `src/providers/google.ts` — thin REST clients (no SDKs) exporting `deeplTranslate`/`googleTranslate` and `resolveDeepLApiKey`/`resolveGoogleApiKey`.
 
 ### CLI commands
@@ -74,7 +75,7 @@ On npm the package is named `@the-lukez/li18n` (not just `li18n`) to avoid confl
 | `build` | Compile locale files once | `--config`, `--no-clean` |
 | `watch` | Recompile on changes to messagesDir | `--config` |
 | `check` | Validate keys across all locales, no output written | `--config` |
-| `translate` | Fill in missing keys in non-default locales via DeepL or Google Translate | `--config`, `--provider`, `--api-key-env`, `--locales`, `--dry-run` |
+| `translate` | Fill in missing keys in non-default locales via DeepL or Google Translate | `--config`, `--provider`, `--api-key-env`, `--env-file`, `--locales`, `--dry-run` |
 | `init` | Create a default `li18n.config.json` in the current directory | `--messages-dir` |
 
 ### Runtime output (generated files)
@@ -106,6 +107,7 @@ Tests live in `tests/`. Run with `bun run test` (NOT just `bun test` as the scri
 | `writer.test.ts` | `keyToExportName` |
 | `config.test.ts` | `loadConfig` validation and error cases |
 | `index.test.ts` | `withLocale` runtime helper |
+| `env.test.ts` | `parseEnv`, `loadEnvFiles` |
 | `translate.test.ts` | `src/translate.ts` helpers (flatten/mask/rebuild) and provider clients |
 | `integration.test.ts` | Full `compile()` pipeline against `tests/fixture/` |
 
@@ -113,14 +115,11 @@ Helpers like `stringNode()`, `conditionalNode()`, `locales()` are defined inside
 
 ### Docs site (`docs/`)
 
-Docs are an **Astro + Fumadocs** static site (migrated from VitePress), deployed to `li18n.thelukez.com`.
+Docs are a **VitePress** static site (moved back from Astro + Fumadocs), deployed to `li18n.thelukez.com` as Cloudflare Workers static assets (`docs/wrangler.jsonc` serves `docs/.vitepress/dist`; its `build.command` runs `bun run build` before every `wrangler deploy`/`dev`). VitePress is pinned to `2.0.0-alpha.21` (v2 prerelease).
 
-- Stack: `astro` (`output: "static"`, no adapter), `@astrojs/react`, `@astrojs/mdx`, `@astrojs/sitemap`, `fumadocs-core`, `fumadocs-ui` (`npm:@fumadocs/base-ui`), `@orama/orama` for search, Tailwind v4 via `@tailwindcss/vite`.
-- Content lives in `docs/content/docs/**`, one `meta.json` per folder listing `pages` order. Frontmatter requires `title`; `description` optional.
-- All content pages use `.mdx`, never plain `.md`. Astro's `components` override on `<Content />` (used to inject fumadocs' `pre`/`code` codeblock wrapper) only applies to `.mdx` — `.md` pages render raw HTML and lose codeblock styling (falls back to looking like inline code). See [withastro/roadmap#769](https://github.com/withastro/roadmap/discussions/769).
-- Package-manager install tabs: fence with ```` ```npm ```` containing a single `npm i ...` command — `remarkNpm` (from `fumadocs-core/mdx-plugins`) auto-generates the bun/npm/pnpm/yarn tabs via `CodeBlockTabs`, already registered in `defaultMdxComponents`. (`package-install` lang is a *different* plugin, `remarkInstall` from the separate `fumadocs-docgen` package — not used here.)
-- `docs/src/lib/source.ts` bridges Astro content collections into a fumadocs `loader()` source; `docs/src/pages/[...slug].astro` renders every page through the shared `Docs` layout (`docs/src/components/docs.tsx`).
-- Search index is static: `docs/src/pages/api/search.ts` is prerendered (`export const prerender = true`) and fetched client-side by `oramaStaticClient` (default path `/api/search`) in `docs/src/components/search.tsx`.
-- Theme toggle is enabled (fumadocs default `next-themes`, `attribute: "class"`) — don't force a `dark` class in `docs/src/components/layout.astro`.
-- Scripts: `docs:dev` / `docs:build` / `docs:preview` at the repo root map to `astro dev` / `astro build` / `astro preview` in `docs/`.
-- `llms.txt` generation (previously via `vitepress-plugin-llms`) was intentionally dropped during the migration and is being re-added separately — don't reintroduce a `vitepress-plugin-llms`-style dependency without checking first.
+- Config: `docs/.vitepress/config.ts`. Content lives in `docs/src/**` (`srcDir: "src"`). Pages are plain `.md` with VitePress syntax (`::: info` / `::: warning` containers, `::: code-group` for install tabs).
+- The sidebar is auto-generated by `docs/.vitepress/sidebar.ts` (`generateSidebar(srcDir)`): each top-level folder in `docs/src` becomes a group, and pages are sorted by the `order` frontmatter field, then by title. The page label is the `title` frontmatter. Don't hand-write sidebar entries; give new pages `title` + `order` frontmatter instead. Override group titles via `groupTitles` in that file.
+- `docs/src/index.md` uses `layout: home` (hero + features).
+- Search: VitePress built-in local search.
+- Scripts: `docs:dev` / `docs:build` / `docs:preview` at the repo root map to `vitepress dev` / `build` / `preview` in `docs/`.
+- `llms.txt` generation (previously via `vitepress-plugin-llms`) was intentionally dropped and is being re-added separately. Don't reintroduce it without checking first.
