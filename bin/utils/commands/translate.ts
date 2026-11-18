@@ -12,6 +12,7 @@ import {
 } from "../../../src/translate.ts";
 import { deeplTranslate, resolveDeepLApiKey } from "../../../src/providers/deepl.ts";
 import { googleTranslate, resolveGoogleApiKey } from "../../../src/providers/google.ts";
+import { loadEnvFiles } from "../../../src/env.ts";
 import { log } from "../logger.ts";
 import type { RawLocaleJson } from "../../../src/schemas.ts";
 
@@ -22,6 +23,7 @@ export async function runTranslate(
   opts: {
     provider: TranslateProvider;
     apiKeyEnv?: string;
+    envFile?: string;
     locales?: string[];
     dryRun: boolean;
   },
@@ -29,6 +31,14 @@ export async function runTranslate(
   const config = await loadConfig(configPath);
   const projectRoot = path.dirname(configPath);
   const messagesDir = path.resolve(projectRoot, config.messagesDir);
+
+  if (!opts.dryRun) {
+    const loaded = await loadEnvFiles({
+      envFile: opts.envFile,
+      searchDirs: [process.cwd(), projectRoot],
+    });
+    for (const file of loaded) log.build(`loaded env file ${path.relative(process.cwd(), file)}`);
+  }
 
   const apiKey = opts.dryRun
     ? ""

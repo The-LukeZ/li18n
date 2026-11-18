@@ -79,6 +79,12 @@ makeCli({
           defaultValue: "",
         },
         {
+          name: "--env-file <path>",
+          description:
+            "Env file to load the API key from (default: tries .env.local, .env.development.local, .env.development, .env in the current and config directory)",
+          defaultValue: "",
+        },
+        {
           name: "--locales <list>",
           description:
             "Comma-separated target locales to translate (default: all non-default locales)",
@@ -95,6 +101,7 @@ makeCli({
         config: string;
         provider: string;
         apiKeyEnv: string;
+        envFile: string;
         locales: string;
         dryRun: boolean;
       }) => {
@@ -104,6 +111,7 @@ makeCli({
         await runTranslate(resolveConfig(options.config), {
           provider: options.provider as TranslateProvider,
           apiKeyEnv: options.apiKeyEnv || undefined,
+          envFile: options.envFile || undefined,
           locales: options.locales ? options.locales.split(",").map((s) => s.trim()) : undefined,
           dryRun: options.dryRun ?? false,
         });
