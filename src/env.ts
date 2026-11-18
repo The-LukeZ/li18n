@@ -2,8 +2,10 @@
  * Minimal `.env` file loading used by the `translate` command to pick up
  * provider API keys.
  *
- * Variables already present in `process.env` are never overwritten, so shell
- * exports always win over file contents.
+ * Parsed values are returned as a plain map and never written to
+ * `process.env`. A `.env` in an untrusted checkout therefore cannot change
+ * runtime behaviour (e.g. `HTTPS_PROXY`, `NODE_TLS_REJECT_UNAUTHORIZED`);
+ * callers only look up the API key names they need.
  */
 
 import path from "node:path";
@@ -47,18 +49,22 @@ export interface LoadEnvOptions {
   envFile?: string;
   /** Directories searched for {@link DEFAULT_ENV_FILES} when `envFile` is not set. */
   searchDirs: string[];
-  /** Target object, defaults to `process.env`. */
-  env?: Record<string, string | undefined>;
+}
+
+export interface LoadEnvResult {
+  /** Merged values. Earlier files win over later ones. */
+  values: Record<string, string>;
+  /** Absolute paths of the files that were loaded. */
+  files: string[];
 }
 
 /**
- * Loads env files into `process.env` (or `opts.env`) without overwriting
- * existing values. Returns the absolute paths of the files that were loaded.
+ * Reads env files into a new map. Does not touch `process.env`.
  *
  * Throws if an explicit `envFile` does not exist.
  */
-export async function loadEnvFiles(opts: LoadEnvOptions): Promise<string[]> {
-  const env = opts.env ?? process.env;
+export async function loadEnvFiles(opts: LoadEnvOptions): Promise<LoadEnvResult> {
+  const values: Record<string, string> = {};
 
   const candidates = opts.envFile
     ? [path.resolve(opts.envFile)]
@@ -66,7 +72,7 @@ export async function loadEnvFiles(opts: LoadEnvOptions): Promise<string[]> {
         DEFAULT_ENV_FILES.map((name) => path.join(dir, name)),
       );
 
-  const loaded: string[] = [];
+  const files: string[] = [];
 
   for (const file of candidates) {
     const handle = Bun.file(file);
@@ -76,10 +82,10 @@ export async function loadEnvFiles(opts: LoadEnvOptions): Promise<string[]> {
     }
 
     for (const [key, value] of Object.entries(parseEnv(await handle.text()))) {
-      if (env[key] === undefined) env[key] = value;
+      if (!(key in values)) values[key] = value;
     }
-    loaded.push(file);
+    files.push(file);
   }
 
-  return loaded;
+  return { values, files };
 }

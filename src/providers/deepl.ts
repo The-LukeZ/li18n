@@ -56,14 +56,17 @@ export async function deeplTranslate(options: DeepLTranslateOptions): Promise<st
   return results;
 }
 
-export function resolveDeepLApiKey(envVarName?: string): string {
+export function resolveDeepLApiKey(
+  envVarName?: string,
+  env: Record<string, string | undefined> = process.env,
+): string {
   if (envVarName) {
-    const val = process.env[envVarName];
+    const val = env[envVarName];
     if (!val) throw new Error(`environment variable "${envVarName}" is not set`);
     return val;
   }
 
-  const val = process.env.LI18N_DEEPL_API_KEY ?? process.env.DEEPL_API_KEY;
+  const val = env.LI18N_DEEPL_API_KEY ?? env.DEEPL_API_KEY;
   if (!val) {
     throw new Error(
       "no DeepL API key found - set LI18N_DEEPL_API_KEY or DEEPL_API_KEY, or pass --api-key-env <name>",

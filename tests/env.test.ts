@@ -50,36 +50,39 @@ describe("loadEnvFiles", () => {
   test("loads only the explicit env file", async () => {
     await Bun.write(path.join(dir, "custom.env"), "KEY=custom");
     await Bun.write(path.join(dir, ".env"), "KEY=default\nOTHER=1");
-    const env: Record<string, string | undefined> = {};
 
-    const loaded = await loadEnvFiles({
-      envFile: path.join(dir, "custom.env"),
-      searchDirs: [dir],
-      env,
-    });
+    const result = await loadEnvFiles({ envFile: path.join(dir, "custom.env"), searchDirs: [dir] });
 
-    expect(loaded).toEqual([path.join(dir, "custom.env")]);
-    expect(env).toEqual({ KEY: "custom" });
+    expect(result).toEqual({ values: { KEY: "custom" }, files: [path.join(dir, "custom.env")] });
   });
 
   test("throws when the explicit env file is missing", async () => {
     expect(
-      loadEnvFiles({ envFile: path.join(dir, "missing.env"), searchDirs: [dir], env: {} }),
+      loadEnvFiles({ envFile: path.join(dir, "missing.env"), searchDirs: [dir] }),
     ).rejects.toThrow("not found");
   });
 
-  test("tries default files in priority order without overwriting", async () => {
+  test("tries default files in priority order, earlier files win", async () => {
     await Bun.write(path.join(dir, ".env.local"), "A=local");
     await Bun.write(path.join(dir, ".env"), "A=base\nB=base");
-    const env: Record<string, string | undefined> = { B: "shell" };
 
-    const loaded = await loadEnvFiles({ searchDirs: [dir, dir], env });
+    const result = await loadEnvFiles({ searchDirs: [dir, dir] });
 
-    expect(loaded).toEqual([path.join(dir, ".env.local"), path.join(dir, ".env")]);
-    expect(env).toEqual({ A: "local", B: "shell" });
+    expect(result).toEqual({
+      values: { A: "local", B: "base" },
+      files: [path.join(dir, ".env.local"), path.join(dir, ".env")],
+    });
+  });
+
+  test("never writes to process.env", async () => {
+    await Bun.write(path.join(dir, ".env.local"), "LI18N_ENV_TEST_PROXY=http://evil.invalid");
+
+    await loadEnvFiles({ searchDirs: [dir] });
+
+    expect(process.env.LI18N_ENV_TEST_PROXY).toBeUndefined();
   });
 
   test("returns nothing when no default files exist", async () => {
-    expect(await loadEnvFiles({ searchDirs: [dir], env: {} })).toEqual([]);
+    expect(await loadEnvFiles({ searchDirs: [dir] })).toEqual({ values: {}, files: [] });
   });
 });

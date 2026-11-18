@@ -49,14 +49,17 @@ export async function googleTranslate(options: GoogleTranslateOptions): Promise<
   return results;
 }
 
-export function resolveGoogleApiKey(envVarName?: string): string {
+export function resolveGoogleApiKey(
+  envVarName?: string,
+  env: Record<string, string | undefined> = process.env,
+): string {
   if (envVarName) {
-    const val = process.env[envVarName];
+    const val = env[envVarName];
     if (!val) throw new Error(`environment variable "${envVarName}" is not set`);
     return val;
   }
 
-  const val = process.env.LI18N_GOOGLE_API_KEY ?? process.env.GOOGLE_TRANSLATE_API_KEY;
+  const val = env.LI18N_GOOGLE_API_KEY ?? env.GOOGLE_TRANSLATE_API_KEY;
   if (!val) {
     throw new Error(
       "no Google Translate API key found - set LI18N_GOOGLE_API_KEY or GOOGLE_TRANSLATE_API_KEY, or pass --api-key-env <name>",

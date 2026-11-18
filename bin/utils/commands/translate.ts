@@ -32,19 +32,22 @@ export async function runTranslate(
   const projectRoot = path.dirname(configPath);
   const messagesDir = path.resolve(projectRoot, config.messagesDir);
 
+  let apiKey = "";
   if (!opts.dryRun) {
-    const loaded = await loadEnvFiles({
+    const { values, files } = await loadEnvFiles({
       envFile: opts.envFile,
       searchDirs: [process.cwd(), projectRoot],
     });
-    for (const file of loaded) log.build(`loaded env file ${path.relative(process.cwd(), file)}`);
-  }
+    for (const file of files) log.build(`loaded env file ${path.relative(process.cwd(), file)}`);
 
-  const apiKey = opts.dryRun
-    ? ""
-    : opts.provider === "google"
-      ? resolveGoogleApiKey(opts.apiKeyEnv)
-      : resolveDeepLApiKey(opts.apiKeyEnv);
+    // Real environment wins over file values. Only the API key is read from
+    // this map; file values never reach process.env.
+    const env = { ...values, ...process.env };
+    apiKey =
+      opts.provider === "google"
+        ? resolveGoogleApiKey(opts.apiKeyEnv, env)
+        : resolveDeepLApiKey(opts.apiKeyEnv, env);
+  }
 
   const defaultFilePath = path.join(messagesDir, `${config.defaultLocale}.json`);
   const defaultRaw = parseRawLocale(await Bun.file(defaultFilePath).text(), defaultFilePath);
