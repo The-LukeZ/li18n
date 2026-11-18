@@ -19,12 +19,12 @@ m.itemCount({ count: 3 }); // "3 items"
 
 ::: code-group
 
-```sh [npm]
-npm i -D @the-lukez/li18n
+```sh [bun]
+bun add -D @the-lukez/li18n
 ```
 
-```sh [bun]
-bun add -d @the-lukez/li18n
+```sh [npm]
+npm i -D @the-lukez/li18n
 ```
 
 ```sh [pnpm]
