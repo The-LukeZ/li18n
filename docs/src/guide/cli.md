@@ -61,6 +61,7 @@ Fill in missing keys in non-default locales via machine translation (DeepL or Go
 li18n translate
 li18n translate --provider google --locales de,fr
 li18n translate --dry-run
+li18n translate --env-file .env.translate
 ```
 
 #### Params
@@ -70,6 +71,7 @@ li18n translate --dry-run
 | `--config <path>`      | Absolute path to the config file                                                    | `li18n.config.json`     |
 | `--provider <name>`    | Machine translation provider: `deepl` or `google`                                   | `deepl`                 |
 | `--api-key-env <name>` | Name of the env var holding the provider API key                                    | -                       |
+| `--env-file <path>`    | Env file to load the API key from                                                   | see below               |
 | `--locales <list>`     | Comma-separated target locales to translate                                         | all non-default locales |
 | `--dry-run`            | List missing keys that would be translated without calling the API or writing files | -                       |
 
@@ -81,6 +83,17 @@ If `--api-key-env` is not given, the key is read from (in order):
 - **google**: `LI18N_GOOGLE_API_KEY` or `GOOGLE_TRANSLATE_API_KEY`
 
 Free-tier DeepL keys (suffixed `:fx`) are automatically routed to the free API host.
+
+#### Env files
+
+With `--env-file <path>`, only that file is loaded (the command fails if it does not exist). Without it, li18n tries these files in the current directory and in the config file directory, in order:
+
+1. `.env.local`
+2. `.env.development.local`
+3. `.env.development`
+4. `.env`
+
+Variables already set in the environment are never overwritten, and earlier files win over later ones. Env files are not loaded with `--dry-run`.
 
 ### `init`
 

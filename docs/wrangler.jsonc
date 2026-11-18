@@ -1,12 +1,14 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "compatibility_date": "2026-07-18",
-  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "compatibility_date": "2026-11-18",
   "name": "li18n-docs",
-  "main": "@astrojs/cloudflare/entrypoints/server",
+  "build": {
+    "command": "bun run build",
+  },
   "assets": {
-    "directory": "./dist",
-    "binding": "ASSETS",
+    "directory": "./.vitepress/dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
   },
   "observability": {
     "enabled": true,

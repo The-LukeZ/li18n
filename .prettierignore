@@ -7,7 +7,6 @@ li18n.schema.json
 messages.schema.json
 
 docs/node_modules/
-docs/.vitepress/*
-!docs/.vitepress/config.ts
+docs/.vitepress/cache/
+docs/.vitepress/dist/
 docs/bun.lock
-docs/worker-configuration.d.ts

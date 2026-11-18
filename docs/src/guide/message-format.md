@@ -72,10 +72,7 @@ Generated signature:
 
 ```ts
 export function status(pOrLocale?: Locale): string;
-export function status(
-  pOrLocale?: { isOnline: boolean },
-  locale?: Locale,
-): string;
+export function status(pOrLocale?: { isOnline: boolean }, locale?: Locale): string;
 ```
 
 ### String conditional

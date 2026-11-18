@@ -21,4 +21,3 @@ features:
   - title: Async-Safe Locale Scoping
     details: Built-in AsyncLocalStorage support via withLocale() - isolate locale per-request in servers and Discord bots without global state collisions.
 ---
-

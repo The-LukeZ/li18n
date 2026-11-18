@@ -192,13 +192,7 @@ After compilation, your entry point is `src/i18n/index.ts`:
 
 ```typescript
 export * as m from "./messages/_index.ts";
-export {
-  getLocale,
-  overwriteGetLocale,
-  withLocale,
-  locales,
-  baseLocale,
-} from "./runtime.ts";
+export { getLocale, overwriteGetLocale, withLocale, locales, baseLocale } from "./runtime.ts";
 export type { Locale, MaybePromise } from "./runtime.ts";
 ```
 
@@ -282,10 +276,7 @@ export const data = new SlashCommandBuilder()
   .setName("role")
   .setDescription("Toggle a role")
   .addRoleOption((option) =>
-    option
-      .setName("role")
-      .setDescription("The role to toggle")
-      .setRequired(true),
+    option.setName("role").setDescription("The role to toggle").setRequired(true),
   );
 
 const execute = withLocale(async (interaction: ChatInputCommandInteraction) => {
@@ -330,10 +321,7 @@ export const data = new SlashCommandBuilder()
     o.setName("minutes").setDescription("Minutes from now").setRequired(true),
   )
   .addStringOption((o) =>
-    o
-      .setName("message")
-      .setDescription("What to remind you of")
-      .setRequired(true),
+    o.setName("message").setDescription("What to remind you of").setRequired(true),
   );
 
 const execute = withLocale(async (interaction: ChatInputCommandInteraction) => {
@@ -352,9 +340,7 @@ const execute = withLocale(async (interaction: ChatInputCommandInteraction) => {
   await interaction.reply(m.remindSet({ minutes }));
 
   setTimeout(async () => {
-    await interaction.followUp(
-      m.remindFire({ username: interaction.user.username, message }),
-    );
+    await interaction.followUp(m.remindFire({ username: interaction.user.username, message }));
   }, minutes * 60_000);
 }, resolveLocale);
 
@@ -411,21 +397,12 @@ import type { Client, Collection, ClientEvents } from "discord.js";
 export class InteractionHandler {
   #client: Client;
   #commands: Collection<string, { execute: (...args: any[]) => Promise<void> }>;
-  #components: Collection<
-    string,
-    { execute: (...args: any[]) => Promise<void> }
-  >;
+  #components: Collection<string, { execute: (...args: any[]) => Promise<void> }>;
 
   constructor(
     client: Client,
-    commands: Collection<
-      string,
-      { execute: (...args: any[]) => Promise<void> }
-    >,
-    components: Collection<
-      string,
-      { execute: (...args: any[]) => Promise<void> }
-    >,
+    commands: Collection<string, { execute: (...args: any[]) => Promise<void> }>,
+    components: Collection<string, { execute: (...args: any[]) => Promise<void> }>,
   ) {
     this.#client = client;
     this.#commands = commands;
